@@ -1,0 +1,24 @@
+#AuthType shibboleth
+#require shibboleth
+
+<Files ".htpasswd">
+	Order allow,deny
+	deny from all
+</Files>
+
+RewriteEngine On
+RewriteBase /phil/static/dev/evalorder
+
+# Always use https://
+RewriteCond %{SERVER_PORT} =80
+RewriteRule ^(.*) https://www.uzh.ch/phil/static/dev/evalorder/$1 [L]
+
+# Rewrite all requests that don't direct to a symbolig link, file or directory to index.php
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+# End of file .htaccess
+# Location: ./.htaccess
+
