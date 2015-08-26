@@ -11,6 +11,10 @@ class Evalorderform extends CI_Controller {
 
 	function index(){
 		$user = $this->shib_auth->verify_user();
+		$admin = false;
+		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch"){
+			$admin = true;
+		}
 		log_message('debug', 'evalorderform_A');
 		// Send user to authentification if he has not logged in so far
 		if($user == false){
@@ -32,7 +36,7 @@ class Evalorderform extends CI_Controller {
 		$this->load->view('header', array('title' => 'Oliv',
 										  'page' => 'Willkommen',
 										  'width' => 'small',
-										  // 'admin' => $admin,
+										  'admin' => $admin,
 										  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
 										  'access' => ($user !== false),
 										  'scripts' => array($jQuery, $umfrageartScript)));
