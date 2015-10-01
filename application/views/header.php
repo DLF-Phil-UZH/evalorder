@@ -78,10 +78,10 @@
 					<div class="linkseparator">&#8226;</div>
 					<?php
 					if(strcmp($page, 'default_values') === 0){ ?>
-						<a class="active" href="<?php /* echo site_url('admin/user_requests'); */ ?>">Standardwerte</a>
+						<a class="active" href="<?php echo site_url('admin/standardwerte'); ?>">Standardwerte</a>
 					<?php }
 					else{ ?>
-						<a href="<?php /* echo site_url('admin/user_requests'); */ ?>">Standardwerte</a>
+						<a href="<?php echo site_url('admin/standardwerte'); ?>">Standardwerte</a>
 					<?php } ?>
 					</div>
 				<?php } ?>
