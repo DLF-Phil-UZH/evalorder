@@ -388,12 +388,14 @@ class Evalorderform extends CI_Controller {
 		$lecturers = $this->_prepareLecturers($numberOfLecturers);
 
 		$this->load->model('Course_model');
+		$this->config->load('standardwerte_config');
 		$course = new Course_model();
 		$course->initialSet(
 			$this->input->post('lehrveranstaltung'),
 			$this->input->post('typ_lehrveranstaltung'),
 			$lecturers,
 			$this->input->post('umfrageart'),
+			$this->config->item('survey_period'),
 			$_SERVER['HTTP_GIVENNAME'],
 			$_SERVER['HTTP_SURNAME'],
 			$_SERVER['HTTP_MAIL'],

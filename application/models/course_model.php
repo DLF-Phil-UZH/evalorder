@@ -5,6 +5,8 @@ class Course_model extends CI_Model{
 	private $id;
 	private $name;
 	private $type;
+	private $participant_file;
+	private $semester;
 	private $lecturers; // Array of lecturer arrays
 	private $surveyType; // 'onlineumfrage' or 'papierumfrage'
 	private $turnout; // Number of participants (paper survey)
@@ -28,11 +30,12 @@ class Course_model extends CI_Model{
 	}
 	
 	// Pseudo constructor to avoid warnings (see http://stackoverflow.com/questions/22688203/codeigniter-php-constructor-missing-argument-even-if-it-is-present)
-	public function initialSet($pName, $pType, $pLecturers, $pSurveyType, $pOrdererFirstname, $pOrdererSurname, $pOrdererEmail, $pOrdererUniqueId){
+	public function initialSet($pName, $pType, $pLecturers, $pSurveyType, $pSemester, $pOrdererFirstname, $pOrdererSurname, $pOrdererEmail, $pOrdererUniqueId){
 		$this->name = $pName;
 		$this->type = $pType;
 		$this->lecturers = $pLecturers;
 		$this->surveyType = $pSurveyType;
+		$this->semester = $pSemester;
 		$this->ordererFirstname = $pOrdererFirstname;
 		$this->ordererSurname = $pOrdererSurname;
 		$this->ordererEmail = $pOrdererEmail;
@@ -63,6 +66,22 @@ class Course_model extends CI_Model{
 
 	public function setType($pType){
 		$this->type = $pType;
+	}
+	
+	public function getParticipant_file(){
+		return $this->participant_file;
+	}
+	
+	public function setParticipant_file($pParticipant_file){
+		$this->participant_file = $pParticipant_file;
+	}
+	
+	public function getSemester(){
+		return $this->semester;
+	}
+
+	public function setSemester($pSemester){
+		$this->semester = $pSemester;
 	}
 	
 	public function getLecturers(){
