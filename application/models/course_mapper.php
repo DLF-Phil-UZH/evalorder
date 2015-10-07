@@ -6,6 +6,7 @@ class Course_mapper extends CI_Model{
 	private $tableCourses = 'evalorder_courses';
 	private $tableLecturers = 'evalorder_lecturers';
 	private $tableParticipants = 'evalorder_participants';
+	private $tableMapping = 'evalorder_courses_lecturers';
 	
 	public function __construct(){
 		parent::__construct();
@@ -69,7 +70,6 @@ class Course_mapper extends CI_Model{
 			}
 		}
 		
-	
 		// Save lecturers
 		$lecturers = $pCourse->getLecturers();
 		if(isset($lecturers) && is_array($lecturers) && (count($lecturers) > 0)){
@@ -94,6 +94,22 @@ class Course_mapper extends CI_Model{
 					log_message('error', 'storeOrder(): Invalid lecturer in lecturer array.');
 					show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [ung&uuml;ltige(r) Dozent(in)]. Bitte versuchen Sie es nochmals.');
 				}
+			}
+		}
+		else{
+			log_message('error', 'storeOrder(): Invalid lecturer array.');
+			show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [ung&uuml;ltige Dozenten]. Bitte versuchen Sie es nochmals.');
+		}
+		
+		// Save lecturer-id and course-id in mapping-table
+		$lecturerQuery = $this->db->get_where($this->tableLecturers, array('courseId' => $pCourse->getId()));
+		if($lecturerQuery->num_rows() > 0){
+			foreach($lecturerQuery->result_array() as $lecturer){
+					$mappingData = array(
+						'lecturer_id' => $lecturer['id'],
+						'course_id' => $pCourse->getId()
+					);
+					$this->db->insert($this->tableMapping, $mappingData);	
 			}
 		}
 		else{
