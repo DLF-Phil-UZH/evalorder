@@ -358,5 +358,16 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 
+/*
+|--------------------------------------------------------------------------
+| XLS folder
+|--------------------------------------------------------------------------
+|
+| Folder to store the uploaded xls files. Full path (with tralining '/' ) to the
+| folder is required
+|
+*/
+$config['xls_folder'] = '/usr/local/ftp/phil/evalorder/files/';
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

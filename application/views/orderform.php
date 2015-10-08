@@ -30,65 +30,35 @@
 			}
 			?>
 			
-			<?php echo form_open_multipart('evalorderform'); ?>
+			<?php // echo form_open_multipart('evalorderform'); ?>
 
+			<!--
 			<h2>Lehrveranstaltung</h2>
 			
 			<table>
 				<tbody>
 					<tr>
-						<td><?php echo form_label('Name', 'lehrveranstaltung'); ?></td>
-						<td><input type="text" <?php echo produceNameIDTags('lehrveranstaltung'); ?> value="<?php echo setEncodedValue('lehrveranstaltung'); ?>" size="50" /></td>
+						<td><?php // echo form_label('Name', 'lehrveranstaltung'); ?></td>
+						<td><input type="text" <?php // echo produceNameIDTags('lehrveranstaltung'); ?> value="<?php // echo setEncodedValue('lehrveranstaltung'); ?>" size="50" /></td>
 					</tr>
 					<tr>
-						<td><?php echo form_label('Typ (&quot;Kategorie&quot; im <a target="_blank" href="http://www.vorlesungen.uzh.ch/">Vorlesungsverzeichnis</a>)', 'typ_lehrveranstaltung'); ?></td>
+						<td><?php // echo form_label('Typ (&quot;Kategorie&quot; im <a target="_blank" href="http://www.vorlesungen.uzh.ch/">Vorlesungsverzeichnis</a>)', 'typ_lehrveranstaltung'); ?></td>
 						<td>
-							<select <?php echo produceNameIDTags('typ_lehrveranstaltung'); ?>>
-								<option value="vorlesung" <?php echo set_select('typ_lehrveranstaltung', 'vorlesung'); ?> >Vorlesung</option>
-								<option value="uebung" <?php echo set_select('typ_lehrveranstaltung', 'uebung'); ?> >&Uuml;bung</option>
-								<option value="seminar" <?php echo set_select('typ_lehrveranstaltung', 'seminar'); ?> >Seminar</option>
-								<option value="kolloquium" <?php echo set_select('typ_lehrveranstaltung', 'kolloquium'); ?> >Kolloquium</option>
+							<select <?php // echo produceNameIDTags('typ_lehrveranstaltung'); ?>>
+								<option value="vorlesung" <?php // echo set_select('typ_lehrveranstaltung', 'vorlesung'); ?> >Vorlesung</option>
+								<option value="uebung" <?php // echo set_select('typ_lehrveranstaltung', 'uebung'); ?> >&Uuml;bung</option>
+								<option value="seminar" <?php // echo set_select('typ_lehrveranstaltung', 'seminar'); ?> >Seminar</option>
+								<option value="kolloquium" <?php // echo set_select('typ_lehrveranstaltung', 'kolloquium'); ?> >Kolloquium</option>
 							</select>
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			-->
 
+			<!--
 			<h2>Dozierende</h2>
-			
-			<input type="hidden" <?php echo produceNameIDTags('anzahlDozenten'); ?> value="<?php echo set_value('anzahlDozenten', '0'); ?>">
-			
-			<!-- Invisible template for one lecturer (Dozent), will be reproduced in browser at least once by Javascript -->
-			<div id="dozent_" class="dozent_template">
-				<h3></h3>
-				<table>
-					<tbody>
-						<tr>
-							<td><?php echo form_label('Nachname', 'nachname_dozent_'); ?></td>
-							<td><input type="text" <?php echo produceNameIDTags('nachname_dozent_'); ?> size="50"/></td>
-						</tr>
-						<tr>
-							<td><?php echo form_label('Vorname', 'vorname_dozent_'); ?></td>
-							<td><input type="text" <?php echo produceNameIDTags('vorname_dozent_'); ?> size="50"/></td>
-						</tr>
-						<tr>
-							<td>Geschlecht</td>
-							<td>
-								<input type="radio" value="maennlich" id="dozent_maennlich_" name="geschlecht_dozent_" <?php echo set_radio('geschlecht_dozent_', 'maennlich'); ?> ><?php echo form_label('m&auml;nnlich', 'dozent_maennlich_'); ?>
-								<input type="radio" value="weiblich" id="dozent_weiblich_" name="geschlecht_dozent_" <?php echo set_radio('geschlecht_dozent_', 'weiblich'); ?> ><?php echo form_label('weiblich', 'dozent_weiblich_'); ?>
-							</td>
-						</tr>
-						<tr>
-							<td><?php echo form_label('Titel', 'titel_dozent_'); ?></td>
-							<td><input type="text" <?php echo produceNameIDTags('titel_dozent_'); ?> size="50"/></td>
-						</tr>
-						<tr>
-							<td><?php echo form_label('E-Mail-Adresse', 'email_dozent_'); ?></td>
-							<td><input type="text" <?php echo produceNameIDTags('email_dozent_'); ?> size="50"/></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			-->
 			
 			<!-- If form inputs have been submitted and must be revised, repopulate all lecturer elements with data -->
 			<?php 
@@ -131,10 +101,7 @@
 			
 			?>
 			
-			<!-- Does not trigger form submission -->
-			<button type="button" id="addDozent" onclick="addDozenten(1)">Dozent(in) hinzuf&uuml;gen</button>
-			<button type="button" id="removeDozent" onclick="removeLastDozent()">Letzte(n) Dozent(in) l&ouml;schen</button>
-			
+			<!--
 			<h2>Umfrage</h2>
 			
 			<table>
@@ -142,22 +109,230 @@
 					<tr>
 						<td>Gew&uuml;nschte Umfrageart</td>
 						<td>
-							<input type="radio" value="onlineumfrage" id="onlineumfrage" name="umfrageart" onclick="showHideUmfrageart()" <?php echo set_radio('umfrageart', 'onlineumfrage'); ?> ><?php echo form_label('Online (Automatischer Versand eines Teilnahmelinks an Studierende per E-Mail)', 'onlineumfrage'); ?><br/>
-							<input type="radio" value="papierumfrage" id="papierumfrage" name="umfrageart" onclick="showHideUmfrageart()" <?php echo set_radio('umfrageart', 'papierumfrage'); ?> ><?php echo form_label('Papier (Austeilen von gedruckten Frageb&ouml;gen in einer Sitzung durch die Dozierenden)', 'papierumfrage'); ?>
+							<input type="radio" value="onlineumfrage" id="onlineumfrage" name="umfrageart" onclick="showHideUmfrageart()" <?php // echo set_radio('umfrageart', 'onlineumfrage'); ?> ><?php // echo form_label('Online (Automatischer Versand eines Teilnahmelinks an Studierende per E-Mail)', 'onlineumfrage'); ?><br/>
+							<input type="radio" value="papierumfrage" id="papierumfrage" name="umfrageart" onclick="showHideUmfrageart()" <?php // echo set_radio('umfrageart', 'papierumfrage'); ?> ><?php // echo form_label('Papier (Austeilen von gedruckten Frageb&ouml;gen in einer Sitzung durch die Dozierenden)', 'papierumfrage'); ?>
 						</td>
 					</tr>
 					<tr id="teilnehmerdatei_tr">
-						<td colspan="2"><?php echo form_label('XLS-Teilnehmerdatei aus OLAT (<a href="">>> Anleitung zum Herunterladen Ihrer Teilnehmerliste</a>)', 'teilnehmerdatei'); ?><input type="file" <?php echo produceNameIDTags('teilnehmerdatei'); ?> size="50"></td>
+						<td colspan="2"><?php // echo form_label('XLS-Teilnehmerdatei aus OLAT (<a href="">>> Anleitung zum Herunterladen Ihrer Teilnehmerliste</a>)', 'teilnehmerdatei'); ?><input type="file" <?php // echo produceNameIDTags('teilnehmerdatei'); ?> size="50"></td>
 					</tr>
 					<tr id="teilnehmeranzahl_tr">
-						<td colspan="2"><?php echo form_label('Anzahl Teilnehmer', 'teilnehmeranzahl'); ?><input type="text" <?php echo produceNameIDTags('teilnehmeranzahl'); ?> value="<?php echo setEncodedValue('teilnehmeranzahl'); ?>" size="4" maxlength="4"></td>
+						<td colspan="2"><?php // echo form_label('Anzahl Teilnehmer', 'teilnehmeranzahl'); ?><input type="text" <?php // echo produceNameIDTags('teilnehmeranzahl'); ?> value="<?php // echo setEncodedValue('teilnehmeranzahl'); ?>" size="4" maxlength="4"></td>
 					</tr>
 				</tbody>
 			</table>
 			
 			<div><input type="submit" value="Bestellen" /></div>
-
+			-->
+			
 			</form>
+			
+			<!-- JQuery Steps -->
+			<?php $attributes = array('id' => 'evalorderform'); ?>
+			<?php echo form_open_multipart('evalorderform', $attributes); ?>
+			<!-- <form id="evalorderform_new" action="#"> -->
+				<div>
+					<h2>Lehrveranstaltung</h2>
+					<section>
+						<label for="lehrveranstaltung">Name</label>
+						<input id="lehrveranstaltung" name="lehrveranstaltung" type="text">
+					</section>
+					<h2>Dozenten</h2>
+					<section>
+						<input type="hidden" <?php echo produceNameIDTags('anzahlDozenten'); ?> value="<?php echo set_value('anzahlDozenten', '0'); ?>">
+			
+						<!-- Invisible template for one lecturer (Dozent), will be reproduced in browser at least once by Javascript -->
+						<div id="dozent_" class="dozent_template">
+							<h3></h3>
+							<table>
+								<tbody>
+									<tr>
+										<td><?php echo form_label('Nachname', 'nachname_dozent_'); ?></td>
+										<td><input type="text" <?php echo produceNameIDTags('nachname_dozent_'); ?> size="50"/></td>
+									</tr>
+									<tr>
+										<td><?php echo form_label('Vorname', 'vorname_dozent_'); ?></td>
+										<td><input type="text" <?php echo produceNameIDTags('vorname_dozent_'); ?> size="50"/></td>
+									</tr>
+									<tr>
+										<td>Geschlecht</td>
+										<td>
+											<input type="radio" value="maennlich" id="dozent_maennlich_" name="geschlecht_dozent_" <?php echo set_radio('geschlecht_dozent_', 'maennlich'); ?> ><?php echo form_label('m&auml;nnlich', 'dozent_maennlich_'); ?>
+											<input type="radio" value="weiblich" id="dozent_weiblich_" name="geschlecht_dozent_" <?php echo set_radio('geschlecht_dozent_', 'weiblich'); ?> ><?php echo form_label('weiblich', 'dozent_weiblich_'); ?>
+										</td>
+									</tr>
+									<tr>
+										<td><?php echo form_label('Titel', 'titel_dozent_'); ?></td>
+										<td><input type="text" <?php echo produceNameIDTags('titel_dozent_'); ?> size="50"/></td>
+									</tr>
+									<tr>
+										<td><?php echo form_label('E-Mail-Adresse', 'email_dozent_'); ?></td>
+										<td><input type="text" <?php echo produceNameIDTags('email_dozent_'); ?> size="50"/></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+						<!-- Does not trigger form submission -->
+						<button type="button" id="addDozent" onclick="addDozenten(1)">Dozent(in) hinzuf&uuml;gen</button>
+						<button type="button" id="removeDozent" onclick="removeLastDozent()">Letzte(n) Dozent(in) l&ouml;schen</button>
+						
+					</section>
+					<h2>Evaluation</h2>
+					<section>
+						<h3>Sprache</h3>
+						<label for="sprache_englisch"><input type="radio" value="englisch" id="sprache_englisch" name="sprache"> Englisch</label><br/>
+						<label for="sprache_deutsch"><input type="radio" value="deutsch" id="sprache_deutsch" name="sprache"> Deutsch</label><br/>
+						<label for="sprache_italienisch"><input type="radio" value="italienisch" id="sprache_italienisch" name="sprache"> Italienisch</label>
+						
+						<h3>Typ der Lehrveranstaltung</h3>
+						<label for="lvtyp_seminar"><input type="radio" value="seminar" id="lvtyp_seminar" name="lvtyp"> Seminar</label>
+						<label for="lvtyp_praktikum"><input type="radio" value="praktikum" id="lvtyp_praktikum" name="lvtyp"> Praktikum</label>
+						<label for="lvtyp_vorlesung"><input type="radio" value="vorlesung" id="lvtyp_vorlesung" name="lvtyp"> Vorlesung</label>
+						<label for="lvtyp_uebung"><input type="radio" value="uebung" id="lvtyp_uebung" name="lvtyp"> &Uuml;bung</label>
+						
+
+						<h3>Art der Evaluation</h3>
+						<table>
+							<tbody>
+								<tr>
+									<!-- <td>Art der Evaluation</td> -->
+									<td>
+										<input type="radio" value="onlineumfrage" id="onlineumfrage" name="umfrageart" onclick="showHideUmfrageart(); setNumberOfLists(1);" <?php echo set_radio('umfrageart', 'onlineumfrage'); ?> ><?php echo form_label('Online (Automatischer Versand eines Teilnahmelinks an Studierende per E-Mail)', 'onlineumfrage'); ?><br/>
+										<input type="radio" value="papierumfrage" id="papierumfrage" name="umfrageart" onclick="showHideUmfrageart(); setNumberOfLists(0);" <?php echo set_radio('umfrageart', 'papierumfrage'); ?> ><?php echo form_label('Papier (Austeilen von gedruckten Frageb&ouml;gen in einer Sitzung durch die Dozierenden)', 'papierumfrage'); ?>
+									</td>
+								</tr>
+								<!--
+								<tr id="teilnehmerdatei_tr">
+									<td colspan="2"><?php // echo form_label('XLS-Teilnehmerdatei aus OLAT (<a href="">>> Anleitung zum Herunterladen Ihrer Teilnehmerliste</a>)', 'teilnehmerdatei'); ?><input type="file" <?php // echo produceNameIDTags('teilnehmerdatei'); ?> size="50"></td>
+								</tr>
+								<tr id="teilnehmeranzahl_tr">
+									<td colspan="2"><?php // echo form_label('Anzahl Teilnehmer', 'teilnehmeranzahl'); ?><input type="text" <?php // echo produceNameIDTags('teilnehmeranzahl'); ?> value="<?php // echo setEncodedValue('teilnehmeranzahl'); ?>" size="4" maxlength="4"></td>
+								</tr>
+								-->
+							</tbody>
+						</table>
+						
+						<h3>Vorschau Fragebogen</h3>
+						<p>Bild x (zum Vergr&ouml;ssern anklicken)</p>
+					</section>
+					<h2>Teilnehmer</h2>
+					<section>
+
+						<div id="teilnehmerdatei_tr">
+							<div id="filenumber_block">
+								<?php //echo form_label('XLS-Teilnehmerdatei aus OLAT (<a href="">>> Anleitung zum Herunterladen Ihrer Teilnehmerliste</a>)', 'teilnehmerdatei'); ?><!--<input type="file" <?php // echo produceNameIDTags('teilnehmerdatei'); ?> size="50">-->
+								<!-- Number of lists to upload -->
+								<label for="nofiles"><input type="radio" name="filenumber" id="nofiles" value="Keine Teilnehmerliste(n) hochladen" onclick="setNumberOfLists(0);"> Keine Teilnehmerlisten hochladen</label>
+								<br/>
+								<label for="file1"><input type="radio" name="filenumber" id="file1" value="file1enable" onclick="setNumberOfLists(1);">1 Liste hochladen</label>
+								<br/>
+								<label for="file2"><input type="radio" name="filenumber" id="file2" value="file2enable" onclick="setNumberOfLists(2);">2 Listen hochladen</label>
+							</div>
+							
+							<!-- List 1 -->
+							<div class="fileupload_block">
+								<input type="text" name="filecheck1" id="filecheck1" class="filecheck" value="">
+								<input type="file" id="fileselect1" name="list1">
+								<button type="button" id="uploadbutton1" onclick="uploadList(1);">Hochladen</button>
+								<span id="filefeedback1"></span>
+							</div>
+							
+							<!-- List 2 -->
+							<div class="fileupload_block">
+								<input type="text" name="filecheck2" id="filecheck2" class="filecheck" value="">
+								<input type="file" id="fileselect2" name="list2">
+								<button type="button" id="uploadbutton2" onclick="uploadList(2);">Hochladen</button>
+								<span id="filefeedback2"></span>
+							</div>
+							
+						</div>
+						
+						<div id="teilnehmeranzahl_tr">
+							<?php echo form_label('Anzahl Teilnehmer', 'teilnehmeranzahl'); ?><input type="text" <?php echo produceNameIDTags('teilnehmeranzahl'); ?> value="<?php echo setEncodedValue('teilnehmeranzahl'); ?>" size="4" maxlength="4">
+						</div>
+
+					</section>
+				</div>
+			</form>
+			
+			<!-- JQuery Steps -->
+			<script type="text/javascript">
+				var form = $("#evalorderform");
+				form.children("div").steps({
+					headerTag: "h2",
+					bodyTag: "section",
+					transitionEffect: "slideLeft",
+					onStepChanging: function (event, currentIndex, newIndex)
+					{
+						// Allways allow step back to the previous step even if the current step is not valid!
+						if(currentIndex > newIndex)
+						{
+							return true;
+						}
+						form.validate().settings.ignore = ":disabled,:hidden";
+						return form.valid();
+					},
+					onFinishing: function (event, currentIndex)
+					{
+						form.validate().settings.ignore = ":disabled";
+						return form.valid();
+					},
+					onFinished: function (event, currentIndex)
+					{
+						form.submit();
+						alert("Submitted!");
+					},
+					/* Labels in german */
+					labels: {
+						cancel: "Abbrechen",
+						current: "Aktueller Schritt",
+						pagination: "Pagination",
+						finish: "Abschliessen",
+						next: "Weiter",
+						previous: "Zurück",
+						loading: "Lädt..."
+					}
+				});
+				form.validate({
+					errorPlacement: function errorPlacement(error, element) { element.before(error); },
+					rules: {
+						// Step 1
+						lehrveranstaltung: {
+							required: true
+						},
+						// Step 2
+						// Handled in orderform.js, dynamic addition and deletion of validation rules for lecturers
+						// Step 3
+						sprache: {
+							required: true
+						},
+						lvtyp: {
+							required: true
+						},
+						umfrageart: {
+							required: true
+						},
+						// Step 4: Result(s) of list check (online surveys)
+						filecheck1: {
+							required: true
+							// equals: "success"
+						},
+						filecheck2: {
+							required: true
+							// equals: "success"
+						},
+						// Step 4: Participant number (paper surveys)
+						teilnehmeranzahl: {
+							required: true,
+							number: true,
+							min: 10
+						}
+					}
+				});
+				
+			</script>
+			
 		<?php }
 		else{ ?>
 			<p>Sie m&uuml;ssen sich anmelden, um auf EvalOrder zugreifen zu k&ouml;nnen: <a href="<?php echo site_url('auth'); ?>">Anmelden</a>.</p>

@@ -214,3 +214,22 @@ div#footer li.left
 {
 	margin-left: 20px;
 }
+
+/* Local adaptions for orderform.php  */
+div.fileupload_block{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+div.fileupload_block .error{
+	margin: 0 !important;
+}
+
+/* Workaround to ensure validation of input field but leave it invisible for user */
+input.filecheck{
+	visibility: hidden;
+	height: 1px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}

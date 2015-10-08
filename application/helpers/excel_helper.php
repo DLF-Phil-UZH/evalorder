@@ -95,3 +95,18 @@ if(!function_exists('extractParticipantAddresses')){
 	}
 
 }
+
+if(!function_exists('countParticipantAddresses')){
+
+	function countParticipantAddresses($pFullPath, $pColumn){
+	
+		log_message('debug', 'countParticipantAddresses_1');
+		$ci =& get_instance();
+		$ci->load->helper('excel');
+		
+		log_message('debug', 'countParticipantAddresses_2');
+		return count(extractParticipantAddresses($pFullPath, $pColumn));
+	
+	}
+
+}

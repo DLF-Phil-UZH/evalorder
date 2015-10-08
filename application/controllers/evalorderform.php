@@ -7,9 +7,12 @@ class Evalorderform extends CI_Controller {
 		log_message('debug', 'evalorderform_00');
 		$this->load->library('shibboleth_authentication_service', NULL, 'shib_auth');
 		log_message('debug', 'evalorderform_01');
+		$this->load->helper(array('form', 'extended_form', 'excel'));
+		$this->load->library('form_validation');
 	}
 
 	function index(){
+		
 		$user = $this->shib_auth->verify_user();
 		$admin = false;
 		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch"){
@@ -30,6 +33,12 @@ class Evalorderform extends CI_Controller {
 		// Javascript for form
 		$jQuery = array('type' => 'text/javascript',
 						'src' => 'https://code.jquery.com/jquery.min.js');
+		$jQueryValidate = array('type' => 'text/javascript',
+								'src' => 'https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.js');
+		$jQueryValidateMessages = array('type' => 'text/javascript',
+							 'src' => base_url('/assets/js/messages_de.js'));
+		$jQuerySteps = array('type' => 'text/javascript',
+							 'src' => base_url('/assets/js/jquery.steps.js'));
 		$umfrageartScript = array('type' => 'text/javascript',
 								  'src' => base_url('/assets/js/orderform.js'));
 		log_message('debug', 'evalorderform_E');
@@ -39,7 +48,7 @@ class Evalorderform extends CI_Controller {
 										  'admin' => $admin,
 										  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
 										  'access' => ($user !== false),
-										  'scripts' => array($jQuery, $umfrageartScript)));
+										  'scripts' => array($jQuery, $jQueryValidate, $jQueryValidateMessages, $jQuerySteps, $umfrageartScript)));
 		log_message('debug', 'evalorderform_F');
 		// Customize error messages of default rules
 		$this->form_validation->set_message('required', 'Das Feld "%s" darf nicht leer sein.');
@@ -50,7 +59,7 @@ class Evalorderform extends CI_Controller {
 		
 		// Lehrveranstaltung
 		$this->form_validation->set_rules('lehrveranstaltung', 'Name der Lehrveranstaltung', 'trim|required');
-		$this->form_validation->set_rules('typ_lehrveranstaltung', 'Typ der Lehrveranstaltung', 'trim|required|callback_checkLVTyp');
+		//$this->form_validation->set_rules('typ_lehrveranstaltung', 'Typ der Lehrveranstaltung', 'trim|required|callback_checkLVTyp');
 		
 		// Dozenten
 		$this->form_validation->set_rules('anzahlDozenten', 'Anzahl Dozenten', 'trim|callback_checkAnzahlDozenten');
@@ -61,7 +70,7 @@ class Evalorderform extends CI_Controller {
 			$this->form_validation->set_rules('nachname_dozent_' . $dozent, 'Nachname Dozent ' . $dozent, 'trim|required');
 			$this->form_validation->set_rules('vorname_dozent_' . $dozent, 'Vorname Dozent ' . $dozent, 'trim|required');
 			$this->form_validation->set_rules('geschlecht_dozent_' . $dozent, 'Geschlecht Dozent ' . $dozent, 'trim|required|callback_checkGeschlecht[' . $dozent . ']');
-			$this->form_validation->set_rules('titel_dozent_' . $dozent, 'Titel Dozent ' . $dozent, 'trim|');
+			$this->form_validation->set_rules('titel_dozent_' . $dozent, 'Titel Dozent ' . $dozent, 'trim');
 			$this->form_validation->set_rules('email_dozent_' . $dozent, 'E-Mail-Adresse Dozent ' . $dozent, 'trim|required|valid_email');
 		}
 		
@@ -75,7 +84,11 @@ class Evalorderform extends CI_Controller {
 		// Datei validieren ODER
 		// Teilnehmeranzahl validieren
 		
+		$this->form_validation->set_rules('lvtyp', 'Typ der Lehrveranstaltung', 'trim|required|callback_checkLVTyp');
+		
 		$this->form_validation->set_rules('umfrageart', 'Umfrageart', 'trim|required|callback_checkUmfrageart');
+		
+		$this->form_validation->set_rules('sprache', 'Sprache', 'trim|required|callback_checkSprache');
 		
 		$this->form_validation->set_rules('teilnehmeranzahl', 'Teilnehmeranzahl', 'trim');
 		
@@ -98,7 +111,7 @@ class Evalorderform extends CI_Controller {
 			// $this->load->model('Course_model');
 			// $order = new Course_model(
 				// $this->input->post('lehrveranstaltung'),
-				// $this->input->post('typ_lehrveranstaltung'),
+				// $this->input->post('lvtyp'),
 				// $lecturers,
 				// $this->input->post('umfrageart'),
 				// $_SERVER['HTTP_GIVENNAME'],
@@ -123,112 +136,182 @@ class Evalorderform extends CI_Controller {
 			print_r($this->input->post());
 			echo "<br/><br/>POST ENDE";
 			*/
-			log_message('debug', 'evalorderform_0.6');
-			// Upload configuration
-			$config['upload_path'] = './uploads/'; // In root folder of application
-			$config['allowed_types'] = 'xls'; // Only Excel 97-2003 files
-			$config['max_size'] = '500'; // KB
+			// log_message('debug', 'evalorderform_0.6');
+			// // Upload configuration
+			// $config['upload_path'] = './uploads/'; // In root folder of application
+			// $config['allowed_types'] = 'xls'; // Only Excel 97-2003 files
+			// $config['max_size'] = '500'; // KB
 			
-			// Rename uploaded file
-			$filename = preg_replace('/\s+/', '_', htmlspecialchars_decode($this->input->post('lehrveranstaltung'))); // Decode HTML entities and replace spaces with underscores
-			$filename = substr($filename, 0, 20); // Reduce to first 20 characters
-			$filename = preg_replace("/[^a-z0-9]+/i", "", $filename); // Remove non-alphanumerical characters
-			$filename = $filename . '_' . $_SERVER['HTTP_SURNAME'] . '_'; // Add orderers surname
-			$filename = $filename . date('Y-m-d_H-i', time()); // Add timestamp
-			log_message('debug', 'evalorderform_0.7');
-			$config['file_name'] = $filename;
-			log_message('debug', 'evalorderform_0.8');
-			$this->load->library('upload', $config);
-			log_message('debug', 'evalorderform_0.9');
+			// // Rename uploaded file
+			// $filename = preg_replace('/\s+/', '_', htmlspecialchars_decode($this->input->post('lehrveranstaltung'))); // Decode HTML entities and replace spaces with underscores
+			// $filename = substr($filename, 0, 20); // Reduce to first 20 characters
+			// $filename = preg_replace("/[^a-z0-9]+/i", "", $filename); // Remove non-alphanumerical characters
+			// $filename = $filename . '_' . $_SERVER['HTTP_SURNAME'] . '_'; // Add orderers surname
+			// $filename = $filename . date('Y-m-d_H-i', time()); // Add timestamp
+			// log_message('debug', 'evalorderform_0.7');
+			// $config['file_name'] = $filename;
+			// log_message('debug', 'evalorderform_0.8');
+			// $this->load->library('upload', $config);
+			// log_message('debug', 'evalorderform_0.9');
 			$this->load->helper('excel');
 			
 			log_message('debug', 'evalorderform_1');
 			
-			// Upload of participant list not successful
-			if(!$this->upload->do_upload('teilnehmerdatei')){
+			// // Upload of participant list not successful
+			// if(!$this->upload->do_upload('teilnehmerdatei')){
 				
-				log_message('debug', 'evalorderform_2');
+				// log_message('debug', 'evalorderform_2');
 				
-				echo "UPLOADDATA<br/><br/>";
-				print_r($this->upload->data());
-				echo "<br/><br/>UPLOADDATA";
+				// echo "UPLOADDATA<br/><br/>";
+				// print_r($this->upload->data());
+				// echo "<br/><br/>UPLOADDATA";
 				
-				log_message('debug', 'evalorderform_3');
+				// log_message('debug', 'evalorderform_3');
 				
-				$uploadError = array('error' => $this->upload->display_errors());
-				log_message('debug', 'evalorderform_4');
-				//$this->load->view('upload_form', $error);
-				$this->load->view('orderform', array('access' => ($user !== false),
-													 'uploadError' => $uploadError));
-				log_message('debug', 'evalorderform_5');
-			}
+				// $uploadError = array('error' => $this->upload->display_errors());
+				// log_message('debug', 'evalorderform_4');
+				// //$this->load->view('upload_form', $error);
+				// $this->load->view('orderform', array('access' => ($user !== false),
+													 // 'uploadError' => $uploadError));
+				// log_message('debug', 'evalorderform_5');
+			// }
 			
-			// Upload successful
-			else{
-				log_message('debug', 'evalorderform_7');
-				// TODO: Load success view, process input data/file
+			// // Upload successful
+			// else{
+				// log_message('debug', 'evalorderform_7');
+				// // TODO: Load success view, process input data/file
 				
-				// $data = array('upload_data' => $this->upload->data());
-				// $this->load->view('upload_success', $data);
+				// // $data = array('upload_data' => $this->upload->data());
+				// // $this->load->view('upload_success', $data);
 				
-				echo "UPLOADDATA<br/><br/>";
-				print_r($this->upload->data());
-				echo "<br/><br/>UPLOADDATA";
+				// echo "UPLOADDATA<br/><br/>";
+				// print_r($this->upload->data());
+				// echo "<br/><br/>UPLOADDATA";
 				
-				log_message('debug', 'evalorderform_8');
+			echo "POST<br/><br/>";
+			print_r($this->input->post());
+			echo "<br/><br/>POST";
+			
+			// log_message('debug', 'evalorderform_8');
+			
+			// $uploadData = $this->upload->data();
+			
+			// log_message('debug', 'evalorderform_9');
+			
+			// Create course object
+			$course = $this->_prepareCourse($anzahlDozenten);
+			$turnout = 0;
+			
+			if($this->input->post('filecheck1') != FALSE){ // If set AND string is not empty
 				
-				$uploadData = $this->upload->data();
-				
-				log_message('debug', 'evalorderform_9');
-				
-				$participantFileValidation = checkParticipantFile($uploadData['full_path']);
-				
+				$fullPath1 = $this->config->item('xls_folder') . $this->input->post('filecheck1');
+				$participantFileValidation1 = checkParticipantFile($fullPath1);
+				// $participantFileValidation1 = checkParticipantFile($uploadData['full_path']);
 				log_message('debug', 'evalorderform_10');
-				
-				if($participantFileValidation[0] === FALSE){
-					log_message('debug', 'evalorderform_11');
-					$fileError = array('fileError' => $participantFileValidation[1]);
+			
+				if($participantFileValidation1[0] === FALSE){
+					
+					log_message('debug', 'evalorderform_10.5');
+					$fileError = array('fileError' => $participantFileValidation1[1]);
 					//$this->load->view('upload_form', $error);
 					$this->load->view('orderform', array('access' => ($user !== false),
 														 'uploadError' => $fileError));
 				}
-				else if($participantFileValidation[0] === TRUE){
-					log_message('debug', 'evalorderform_12');
-					$emailColumn = $participantFileValidation[1];
+				else if($participantFileValidation1[0] === TRUE){
 					
-					$participantAddresses = extractParticipantAddresses($uploadData['full_path'], $emailColumn);
-				
-					echo "participantAddresses<br/><br/>";
-					print_r($participantAddresses);
-					echo "<br/><br/>participantAddresses";
+					log_message('debug', 'evalorderform_10.6.1');
+					$participantFile1 = $this->input->post('filecheck1');
+					$course->setParticipantFile1($participantFile1);
 					
-					// $lecturers = $this->_prepareLecturers($anzahlDozenten);
-			
-					// $this->load->model('Course_model');
-					// $order = new Course_model(
-						// $this->input->post('lehrveranstaltung'),
-						// $this->input->post('typ_lehrveranstaltung'),
-						// $lecturers,
-						// $this->input->post('umfrageart'),
-						// $_SERVER['HTTP_GIVENNAME'],
-						// $_SERVER['HTTP_SURNAME'],
-						// $_SERVER['HTTP_MAIL'],
-						// $_SERVER['HTTP_UNIQUEID']
-					// );
-					
-					$course = $this->_prepareCourse($anzahlDozenten);
-					$course->setParticipants($participantAddresses);
-					// Write to database
-					$this->load->model('Course_mapper');
-					$this->Course_mapper->storeOrder($course);
-					
-					// TODO: Temporary until correct data processing is implemented
-					$this->load->view('ordersuccess');
+					// Count participants
+					log_message('debug', 'evalorderform_10.6.2');
+					$turnout += countParticipantAddresses($fullPath1, $participantFileValidation1[1]);
+					log_message('debug', 'evalorderform_10.6.3---turnout = ' . $turnout);
 				}
 				
-				log_message('debug', 'evalorderform_13');
+			}
+			
+			/* Unused, user is allowed to not upload a participant list
+			
+			// At least one list must have been uploaded
+			else{
+				log_message('debug', 'evalorderform_10.7');
+				$fileError = array('fileError' => 'Die 1. Teilnehmerliste konnte nicht gefunden werden.');
+				//$this->load->view('upload_form', $error);
+				$this->load->view('orderform', array('access' => ($user !== false),
+													 'uploadError' => $fileError));
+			}
+			
+			*/
+			
+			if($this->input->post('filecheck2') != FALSE){ // If set AND string is not empty
+				
+				$fullPath2 = $this->config->item('xls_folder') . $this->input->post('filecheck2');
+				$participantFileValidation2 = checkParticipantFile($fullPath2);
+				// $participantFileValidation2 = checkParticipantFile($uploadData['full_path']);
+				log_message('debug', 'evalorderform_11');
+			
+				if($participantFileValidation2[0] === FALSE){
+					
+					log_message('debug', 'evalorderform_11.5');
+					$fileError = array('fileError' => $participantFileValidation2[1]);
+					//$this->load->view('upload_form', $error);
+					$this->load->view('orderform', array('access' => ($user !== false),
+														 'uploadError' => $fileError));
+				}
+				else if($participantFileValidation2[0] === TRUE){
+					
+					$participantFile2 = $this->input->post('filecheck2');
+					$course->setParticipantFile2($participantFile2);
+					
+					// Count participants
+					$turnout += countParticipantAddresses($fullPath2, $participantFileValidation2[1]);
+				}
 				
 			}
+			
+			// else if($participantFileValidation[0] === TRUE){
+				// log_message('debug', 'evalorderform_12');
+				// $emailColumn = $participantFileValidation[1];
+				
+				// $participantAddresses = extractParticipantAddresses($uploadData['full_path'], $emailColumn);
+			
+				// echo "participantAddresses<br/><br/>";
+				// print_r($participantAddresses);
+				// echo "<br/><br/>participantAddresses";
+				
+				// // $lecturers = $this->_prepareLecturers($anzahlDozenten);
+		
+				// // $this->load->model('Course_model');
+				// // $order = new Course_model(
+					// // $this->input->post('lehrveranstaltung'),
+					// // $this->input->post('lvtyp'),
+					// // $lecturers,
+					// // $this->input->post('umfrageart'),
+					// // $_SERVER['HTTP_GIVENNAME'],
+					// // $_SERVER['HTTP_SURNAME'],
+					// // $_SERVER['HTTP_MAIL'],
+					// // $_SERVER['HTTP_UNIQUEID']
+				// // );
+				
+				
+				//$course->setParticipants($participantAddresses);
+				
+				log_message('debug', 'evalorderform_12');
+				$course->setTurnout($turnout);
+				
+				log_message('debug', 'evalorderform_12.2');
+				// Write to database
+				$this->load->model('Course_mapper');
+				$this->Course_mapper->storeOrder($course);
+				
+				// TODO: Temporary until correct data processing is implemented
+				$this->load->view('ordersuccess');
+			
+			
+			log_message('debug', 'evalorderform_13');
+				
+			// }
 			
 		}
 		
@@ -241,11 +324,25 @@ class Evalorderform extends CI_Controller {
 		if(strcmp($pValue, "vorlesung") == 0 ||
 		   strcmp($pValue, "uebung") == 0 ||
 		   strcmp($pValue, "seminar") == 0 ||
-		   strcmp($pValue, "kolloquium") == 0){
+		   strcmp($pValue, "praktikum") == 0){
 			return TRUE;
 		}
 		else{
 			$this->form_validation->set_message('checkLVTyp', 'Der Lehrveranstaltungstyp ist ung&uuml;ltig');
+			return FALSE;
+		}
+	}
+	
+	// Callback for checking field of language (Sprache)
+	public function checkSprache($pValue){
+		log_message('debug', 'callback_checkSprache: pValue = ' . $pValue);
+		if(strcmp($pValue, "englisch") == 0 ||
+		   strcmp($pValue, "deutsch") == 0 ||
+		   strcmp($pValue, "italienisch") == 0){
+			return TRUE;
+		}
+		else{
+			$this->form_validation->set_message('checkSprache', 'Die Sprache ist ung&uuml;ltig');
 			return FALSE;
 		}
 	}
@@ -261,6 +358,141 @@ class Evalorderform extends CI_Controller {
 		return htmlspecialchars($pValue, ENT_QUOTES);
 	}
 	*/
+	
+	// Handles file uploads requested by AJAX
+	public function uploadfile(){
+		
+		
+		log_message('debug', 'uploadfile_1');
+		$storeResult = array(
+			'status' => '',
+			'feedback' => ''
+		);
+		log_message('debug', 'uploadfile_2');
+		if(!empty($_FILES["list1"])){
+			log_message('debug', 'uploadfile_2.1');
+			$storeResult = $this->_storeParticipantList($_FILES["list1"]);
+			log_message('debug', 'uploadfile_3');
+			//echo "list1";
+		}
+		log_message('debug', 'uploadfile_4');
+		if(!empty($_FILES["list2"])){
+			$storeResult = $this->_storeParticipantList($_FILES["list2"]);
+			log_message('debug', 'uploadfile_5');
+			//echo "list2";
+		}
+		log_message('debug', 'uploadfile_6');
+		if(!($storeResult['status'] === 'success')){
+			log_message('debug', 'uploadfile_7');
+			echo json_encode($storeResult);
+		}
+		else{
+			log_message('debug', 'uploadfile_8');
+			$participantFileValidation = checkParticipantFile($storeResult['path']);
+			log_message('debug', 'uploadfile_9');
+			if($participantFileValidation[0] === FALSE){
+				// log_message('debug', 'evalorderform_11');
+				// $fileError = array('fileError' => $participantFileValidation[1]);
+				//$this->load->view('upload_form', $error);
+				//$this->load->view('orderform', array('access' => ($user !== false),
+													 // 'uploadError' => $fileError));
+				log_message('debug', 'uploadfile_10');
+				echo json_encode(
+					array(
+						'status' => 'error',
+						'feedback' => $participantFileValidation[1]
+					)
+				);
+			}
+			else if($participantFileValidation[0] === TRUE){
+				log_message('debug', 'uploadfile_11');
+				// log_message('debug', 'evalorderform_12');
+				echo json_encode(
+					array(
+						'status' => 'success',
+						'feedback' => $storeResult['filename']
+					)
+				);
+				
+				// $emailColumn = $participantFileValidation[1];
+				
+				// $participantAddresses = extractParticipantAddresses($storeResult['path'], $emailColumn);
+			
+				//echo "participantAddresses<br/><br/>";
+				// print_r($participantAddresses);
+				// echo "<br/><br/>participantAddresses";
+				
+				// $lecturers = $this->_prepareLecturers($anzahlDozenten);
+		
+				// $this->load->model('Course_model');
+				// $order = new Course_model(
+					// $this->input->post('lehrveranstaltung'),
+					// $this->input->post('lvtyp'),
+					// $lecturers,
+					// $this->input->post('umfrageart'),
+					// $_SERVER['HTTP_GIVENNAME'],
+					// $_SERVER['HTTP_SURNAME'],
+					// $_SERVER['HTTP_MAIL'],
+					// $_SERVER['HTTP_UNIQUEID']
+				// );
+
+			}
+		
+		}
+	}
+
+	private function _storeParticipantList($file){
+		log_message('debug', '_storeParticipantList');
+		// define("UPLOAD_DIR", "./uploads/");
+		$uploadDirectory = $this->config->item('xls_folder');
+		log_message('debug', '_storeParticipantList');
+		if($file["error"] !== UPLOAD_ERR_OK){
+			log_message('debug', '_storeParticipantList');
+			return array(
+				'status' => 'error',
+				'feedback' => 'Fehler beim Hochladen der Datei.'
+			);
+			// exit;
+		}
+
+		// ensure a safe filename
+		$name = preg_replace("/[^A-Z0-9._-]/i", "_", $file["name"]);
+		log_message('debug', '_storeParticipantList_1');
+		// don't overwrite an existing file
+		$i = 0;
+		log_message('debug', '_storeParticipantList2');
+		$parts = pathinfo($name);
+		log_message('debug', '_storeParticipantList3');
+		while(file_exists($uploadDirectory . $name)){
+			$i++;
+			$name = $parts["filename"] . "-" . $i . "." . $parts["extension"];
+		}
+		log_message('debug', '_storeParticipantList4');
+		// preserve file from temporary directory
+		$success = move_uploaded_file($file["tmp_name"], $uploadDirectory . $name);
+		log_message('debug', '_storeParticipantList5');
+		if(!$success){
+			log_message('debug', '_storeParticipantList6');
+			return array(
+				'status' => 'error',
+				'feedback' => 'Datei konnte nicht gespeichert werden.'
+			);
+			// exit;
+		}
+		log_message('debug', '_storeParticipantList7');
+		// set proper permissions on the new file
+		chmod($uploadDirectory . $name, 0644);
+		// echo json_encode(
+		return array(
+			'status' => 'success',
+			'feedback' => 'Datei erfolgreich hochgeladen.',
+			'path' => $uploadDirectory . $name,
+			'filename' => $name
+		);
+		// );
+		
+	}
+	
 	
 	// Callback for gender of lecturer (Geschlecht Dozent)
 	public function checkGeschlecht($pValue, $pDozent){
@@ -388,12 +620,15 @@ class Evalorderform extends CI_Controller {
 		$lecturers = $this->_prepareLecturers($numberOfLecturers);
 
 		$this->load->model('Course_model');
+		$this->config->load('standardwerte_config');
 		$course = new Course_model();
 		$course->initialSet(
 			$this->input->post('lehrveranstaltung'),
-			$this->input->post('typ_lehrveranstaltung'),
+			$this->input->post('lvtyp'),
 			$lecturers,
 			$this->input->post('umfrageart'),
+			$this->config->item('survey_period'),
+			$this->input->post('sprache'),
 			$_SERVER['HTTP_GIVENNAME'],
 			$_SERVER['HTTP_SURNAME'],
 			$_SERVER['HTTP_MAIL'],
