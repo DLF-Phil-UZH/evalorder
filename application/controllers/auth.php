@@ -13,7 +13,7 @@ class Auth extends CI_Controller {
      * 
 	 */
 	public function index(){
-        if ($user = $this->shib_auth->verify_user() !== false) {
+		if ($user = $this->shib_auth->verify_user() !== false) {
 			// if there is a user and he has access, redirect to
 			// the manager page
 			log_message('debug', 'auth->REDIRECT->welcome');

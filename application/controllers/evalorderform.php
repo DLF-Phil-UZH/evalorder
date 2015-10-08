@@ -71,7 +71,7 @@ class Evalorderform extends CI_Controller {
 			$this->form_validation->set_rules('vorname_dozent_' . $dozent, 'Vorname Dozent ' . $dozent, 'trim|required');
 			$this->form_validation->set_rules('geschlecht_dozent_' . $dozent, 'Geschlecht Dozent ' . $dozent, 'trim|required|callback_checkGeschlecht[' . $dozent . ']');
 			$this->form_validation->set_rules('titel_dozent_' . $dozent, 'Titel Dozent ' . $dozent, 'trim');
-			$this->form_validation->set_rules('email_dozent_' . $dozent, 'E-Mail-Adresse Dozent ' . $dozent, 'trim|required|valid_email');
+			$this->form_validation->set_rules('email_dozent_' . $dozent, 'E-Mail-Adresse Dozent ' . $dozent, 'trim|required');
 		}
 		
 		/*
