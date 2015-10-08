@@ -100,6 +100,7 @@ class Course_model extends CI_Model{
 	public function setSemester($pSemester){
 		$this->semester = $pSemester;
 	}
+
 	public function getLecturers(){
 		return $this->lecturers;
 	}

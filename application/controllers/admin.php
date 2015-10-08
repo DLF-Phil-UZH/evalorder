@@ -12,10 +12,10 @@ class Admin extends CI_Controller {
 		if ($user == false) {
 			redirect('auth');
    		}
-		//$this->adminaccess = false;
-		//if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch"){
-		$this->adminaccess = true;
-		//}
+		$this->adminaccess = false;
+		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch"){
+			$this->adminaccess = true;
+		}
 		$this->load->database();
 	}
 
@@ -26,7 +26,7 @@ class Admin extends CI_Controller {
 	public function bestellungen(){
 		if($this->adminaccess === true){
 			try{
-				$this->load->view('header', array('title' => 'Oliv: Administration',
+				$this->load->view('header', array('title' => 'Administration',
 											  'page' => 'bestellungen',
 											  'width' => 'small',
                                               'logged_in' => $this->shib_auth->verify_shibboleth_session(),
@@ -35,7 +35,28 @@ class Admin extends CI_Controller {
 				$this->load->view('bestellungen');
 				$this->load->view('footer');
 			}catch(Exception $e){
-				$this->_handle_crud_exception($e);
+				
+			}
+		}
+		// If user is not an admin
+		else{
+			$this->_access_denied();
+		}
+	}
+	
+		public function standardwerte(){
+		if($this->adminaccess === true){
+			try{
+				$this->load->view('header', array('title' => 'Administration',
+											  'page' => 'standardwerte',
+											  'width' => 'small',
+                                              'logged_in' => $this->shib_auth->verify_shibboleth_session(),
+											  'access' => ($this->shib_auth->verify_user() !== false),
+											  'admin' => $this->adminaccess));
+				$this->load->view('standardwerte');
+				$this->load->view('footer');
+			}catch(Exception $e){
+			
 			}
 		}
 		// If user is not an admin
@@ -46,7 +67,7 @@ class Admin extends CI_Controller {
 
     private function _access_denied() {
         $this->output->set_status_header('403');
-		$this->load->view('header', array('title' => 'Oliv: Zugriff verweigert',
+		$this->load->view('header', array('title' => 'Zugriff verweigert',
 										  'page' => 'access_denied',
 										  'width' => 'small',
                                           'logged_in' => $this->shib_auth->verify_shibboleth_session(),
