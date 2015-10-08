@@ -1,10 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 
 <?php
-$dbhost = '';
-$dbuser = '';
-$dbpass = '';
-$dbname = '';
+$this->load->database();
+
+$dbhost = $this->db->hostname;
+$dbuser = $this->db->username;
+$dbpass = $this->db->password;
+$dbname = $this->db->database;
 
 mysqli_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
