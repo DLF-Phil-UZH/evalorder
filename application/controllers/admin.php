@@ -26,12 +26,18 @@ class Admin extends CI_Controller {
 	public function bestellungen(){
 		if($this->adminaccess === true){
 			try{
+				// Javascript files
+				$jQuery = array('type' => 'text/javascript',
+								'src' => 'https://code.jquery.com/jquery.min.js');
+				$orderformLibrary = array('type' => 'text/javascript',
+										  'src' => base_url('/assets/js/orderform_library.js'));
 				$this->load->view('header', array('title' => 'Administration',
 											  'page' => 'bestellungen',
-											  'width' => 'small',
+											  'width' => 'normal',
                                               'logged_in' => $this->shib_auth->verify_shibboleth_session(),
 											  'access' => ($this->shib_auth->verify_user() !== false),
-											  'admin' => $this->adminaccess));
+											  'admin' => $this->adminaccess,
+											  'scripts' => array($jQuery, $orderformLibrary)));
 				$this->load->view('bestellungen');
 				$this->load->view('footer');
 			}catch(Exception $e){

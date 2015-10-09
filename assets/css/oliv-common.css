@@ -233,3 +233,45 @@ input.filecheck{
 	padding: 0;
 	border: 0;
 }
+
+/* Wrapper for table in bestellungen.php */
+div#bestellungen{
+	overflow: auto;
+}
+
+div#bestellungen table{
+	border-collapse: collapse;
+	border: 0px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+div#bestellungen th{
+	color:#555;
+	font-weight: bold;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: left;
+}
+
+div#bestellungen td, th{
+	padding: 5px;
+}
+
+div#bestellungen .export{
+	text-align: center;
+}
+
+/* Zebra crossing for every second row */
+div#bestellungen tr.zebra{
+	background-color: #E8E8E8;
+}
+
+div#bestellungen label, input, button, select, textarea{
+	
+}
+
+div#bestellungen .filecheck{
+	display: none;
+}

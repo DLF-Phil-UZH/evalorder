@@ -39,8 +39,10 @@ class Evalorderform extends CI_Controller {
 							 'src' => base_url('/assets/js/messages_de.js'));
 		$jQuerySteps = array('type' => 'text/javascript',
 							 'src' => base_url('/assets/js/jquery.steps.js'));
-		$umfrageartScript = array('type' => 'text/javascript',
-								  'src' => base_url('/assets/js/orderform.js'));
+		$orderformLibrary = array('type' => 'text/javascript',
+								  'src' => base_url('/assets/js/orderform_library.js'));
+		$orderform = array('type' => 'text/javascript',
+						   'src' => base_url('/assets/js/orderform.js'));
 		log_message('debug', 'evalorderform_E');
 		$this->load->view('header', array('title' => 'Oliv',
 										  'page' => 'Willkommen',
@@ -48,7 +50,7 @@ class Evalorderform extends CI_Controller {
 										  'admin' => $admin,
 										  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
 										  'access' => ($user !== false),
-										  'scripts' => array($jQuery, $jQueryValidate, $jQueryValidateMessages, $jQuerySteps, $umfrageartScript)));
+										  'scripts' => array($jQuery, $jQueryValidate, $jQueryValidateMessages, $jQuerySteps, $orderformLibrary, $orderform)));
 		log_message('debug', 'evalorderform_F');
 		// Customize error messages of default rules
 		$this->form_validation->set_message('required', 'Das Feld "%s" darf nicht leer sein.');
@@ -360,10 +362,10 @@ class Evalorderform extends CI_Controller {
 	*/
 	
 	// Handles file uploads requested by AJAX
-	public function uploadfile(){
+	public function uploadfile($pCourseId = NULL, $pFileNumber = NULL){
 		
 		
-		log_message('debug', 'uploadfile_1');
+		log_message('debug', 'uploadfile_1: type(courseid) = ' . gettype($pCourseId) . ', type(filenumber) = ' . gettype($pFileNumber));
 		$storeResult = array(
 			'status' => '',
 			'feedback' => ''
@@ -407,12 +409,66 @@ class Evalorderform extends CI_Controller {
 			else if($participantFileValidation[0] === TRUE){
 				log_message('debug', 'uploadfile_11');
 				// log_message('debug', 'evalorderform_12');
-				echo json_encode(
-					array(
-						'status' => 'success',
-						'feedback' => $storeResult['filename']
-					)
-				);
+				
+				// If called from backend, set filename to course in database
+				if($pCourseId && $pFileNumber){
+					log_message('debug', 'uploadfile_12');
+					if($this->_validatesAsInteger($pCourseId) && $this->_validatesAsInteger($pFileNumber)){
+						log_message('debug', 'uploadfile_13');
+						$this->load->database();
+						
+						$this->db->trans_start();
+						
+						$this->db->where('id', $pCourseId);
+						$this->db->update('evalorder_courses', array('participantFile' . $pFileNumber => $storeResult['filename']));
+						
+						$this->db->trans_complete();
+						log_message('debug', 'uploadfile_14');
+						if($this->db->trans_status() === FALSE){
+							log_message('error', 'uploadFile(course ' . $pCourseId . ', file number ' . $pFileNumber . '): Transaction failed.');
+							
+							echo json_encode(
+								array(
+									'status' => 'error',
+									'feedback' => 'Datenbankfehler'
+								)
+							);
+						}
+						else{
+							log_message('info', 'uploadFile(course ' . $pCourseId . ', file number ' . $pFileNumber . '): Transaction complete.');
+							
+							echo json_encode(
+								array(
+									'status' => 'success',
+									'feedback' => $storeResult['filename']
+								)
+							);
+						}
+					}
+					// Invalid URI segments
+					else{
+						log_message('debug', 'uploadfile_15');
+						echo json_encode(
+							array(
+								'status' => 'error',
+								'feedback' => 'Ung&uuml;ltige Kurs-ID oder Listennummer'
+							)
+						);
+					}
+					
+				}
+				
+				// If called from order form by user
+				else{
+					log_message('debug', 'uploadfile_16');
+					echo json_encode(
+						array(
+							'status' => 'success',
+							'feedback' => $storeResult['filename']
+						)
+					);
+				}
+				
 				
 				// $emailColumn = $participantFileValidation[1];
 				
@@ -638,7 +694,13 @@ class Evalorderform extends CI_Controller {
 		return $course;
 		
 	}
-
+	
+	// Returns true if a string is a valid integer, false if not (http://stackoverflow.com/a/2012271)
+	private function _validatesAsInteger($pNumber){
+		$pNumber = filter_var($pNumber, FILTER_VALIDATE_INT);
+		return ($pNumber !== FALSE);
+	}
+	
 }
 
 /* End of file evalorderform.php */

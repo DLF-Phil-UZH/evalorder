@@ -70,7 +70,7 @@
 					<div id="primarnav">
 					<a class="namedanchor" name="primarnav"><!----></a>
 					<?php
-					if(strcmp($page, 'orders') === 0){ ?>
+					if(strcmp($page, 'bestellungen') === 0){ ?>
 						<a class="active" href="<?php echo site_url('admin/bestellungen'); ?>">Bestellungen</a>
 					<?php }
 					else{ ?>
@@ -78,7 +78,7 @@
 					<?php } ?>
 					<div class="linkseparator">&#8226;</div>
 					<?php
-					if(strcmp($page, 'default_values') === 0){ ?>
+					if(strcmp($page, 'standardwerte') === 0){ ?>
 						<a class="active" href="<?php echo site_url('admin/standardwerte'); ?>">Standardwerte</a>
 					<?php }
 					else{ ?>

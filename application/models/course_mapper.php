@@ -64,7 +64,7 @@ class Course_mapper extends CI_Model{
 		// Save turnout if it is a paper survey
 		elseif(strcmp($pCourse->getSurveyType(), 'papierumfrage') === 0){
 			$turnout = $pCourse->getTurnout();
-			if(isset($turnout) && is_numeric($turnout) && $turnout >= 10){
+			if(isset($turnout) && is_int($turnout) && $turnout >= 10){
 				$this->db->where('id', $pCourse->getId());
 				$this->db->update($this->tableCourses, array('turnout' => $turnout));
 			}
@@ -78,7 +78,7 @@ class Course_mapper extends CI_Model{
 		
 		// Save turnout
 		$turnout = $pCourse->getTurnout();
-		if(isset($turnout) && is_numeric($turnout)){
+		if(isset($turnout) && is_int($turnout)){
 			if(strcmp($pCourse->getSurveyType(), 'papierumfrage') === 0 && $turnout < 10){
 				log_message('error', 'storeOrder(): Invalid turnout.');
 				show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [zu wenig Teilnehmer f&uuml;r eine Papier-Umfrage]. Bitte versuchen Sie es nochmals.');
