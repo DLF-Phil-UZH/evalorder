@@ -264,9 +264,42 @@ div#bestellungen .export{
 }
 
 /* Zebra crossing for every second row */
-div#bestellungen tr.zebra{
+table.tablesorter tr.even{
 	background-color: #E8E8E8;
 }
+
+/* Move sorting arrows to the right of table headers */
+table.tablesorter th.header{
+	background-image: none;
+}
+
+table.tablesorter th.header span{
+	background-image: url("/uzh/authoring/images/sort.gif");
+	background-position: right center;
+	background-repeat: no-repeat;
+	padding-right: 20px;
+}
+
+table.tablesorter th.headerSortUp span{
+	background-image: url("/uzh/authoring/images/asc.gif");
+	background-position: right center;
+	background-repeat: no-repeat;
+	padding-right: 20px;
+}
+
+table.tablesorter th.headerSortDown span{
+	background-image: url("/uzh/authoring/images/desc.gif");
+    background-position: right center;
+	background-repeat: no-repeat;
+    padding-right: 20px;
+}
+
+/* table.tablesorter tbody tr.normal-row td {
+	background: #E8E8E8;
+}
+table.tablesorter tbody tr.alt-row td {
+	/* background: #555; */
+} */
 
 div#bestellungen label, input, button, select, textarea{
 	

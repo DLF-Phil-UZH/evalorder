@@ -26,22 +26,25 @@ $num_rows = mysql_num_rows($var);
 		<p>Gefundene Bestellungen: <?php echo $num_rows;?></p>
 		<div id="bestellungen">
 			<?php
-			echo "<table id=\"bestellungen\">";
-			echo "<tr class=\"zebra\"><th class=\"export\">Exportieren</th><th>Umfragetyp</th><th>Dozent(en)</th>";
-			echo "<th>Name</th><th>Veranstaltungstyp</th><th>Semester</th>";
-			echo "<th>TN-Liste 1</th>";
-			echo "<th>TN-Liste 2</th></tr>";
+			echo "<table id=\"bestellungen_table\" class=\"tablesorter\">";
+			echo "<thead>";
+			echo "<tr class=\"even\"><th class=\"export\">Exportieren<span></span></th><th>Zuletzt exportiert<span></span></th><th>Umfragetyp<span></span></th><th>Dozent(en)<span></span></th>";
+			echo "<th>Name<span></span></th><th>Veranstaltungstyp<span></span></th><th>Semester<span></span></th>";
+			echo "<th>TN-Liste 1<span></span></th>";
+			echo "<th>TN-Liste 2<span></span></th></tr>";
+			echo "</thead>";
+			echo "<tbody>";
 			$rownumber = 0;
 			while ($result = mysql_fetch_array($var)){
 				$rownumber++;
 				// Add different background color on every second row
-				if($rownumber % 2 == 0){
-					echo '<tr class="zebra">';
-				}
-				else{
+				// if($rownumber % 2 == 0){
+					// echo '<tr class="zebra">';
+				// }
+				// else{
 					echo '<tr>';
-				}
-				echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td><td>$result[surveyType]</td>";
+				// }
+				echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td><td>$result[lastExport]</td><td>$result[surveyType]</td>";
 				
 				$query2  = "SELECT evalorder_lecturers.surname, evalorder_lecturers.firstname, evalorder_courses.name, evalorder_courses.id AS id FROM evalorder_lecturers INNER JOIN";
 				$query2 .= " evalorder_courses_lecturers ON evalorder_lecturers.id = evalorder_courses_lecturers.lecturer_id INNER JOIN";
@@ -90,6 +93,7 @@ $num_rows = mysql_num_rows($var);
 				}
 				
 			}
+			echo "</tbody>";
 			echo "</table>";
 			?>
 		</div>
