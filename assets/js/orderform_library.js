@@ -53,6 +53,7 @@ function showHideRemoveLecturerButton(){
 	var currentNumber = parseInt($('#anzahlDozenten').val());
 	if(currentNumber > 1){
 		$("#removeDozent").show();
+		$('#removeDozent').css('display', 'inline-block');
 	}
 	else{
 		$("#removeDozent").hide();
@@ -116,7 +117,13 @@ function addDozenten(number){
 			
 			// Append number to attributes
 			$("#dozent_" + newNumberString).removeAttr("class");
-			$("#dozent_" + newNumberString).find("h3").text("DozentIn " + newNumberString);
+			// Only add number to title from second lecturer ascending
+			if(newNumber > 1){
+				$("#dozent_" + newNumberString).find("h3").text("Dozierende Person " + newNumberString);
+			}
+			else{
+				$("#dozent_" + newNumberString).find("h3").text("Dozierende Person");
+			}
 			$("#dozent_" + newNumberString).find("label").each(function(){
 				var oldFor = $(this).attr("for");
 				$(this).attr("for", oldFor + newNumberString);

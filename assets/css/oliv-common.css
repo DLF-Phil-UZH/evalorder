@@ -216,13 +216,88 @@ div#footer li.left
 }
 
 /* Local adaptions for orderform.php  */
+
+/* Name of course like h3 */
+.labelasheading{
+	font-size: 1em;
+    font-weight: bold;
+}
+
+/* Explanation paragraphs in order form */
+p.explanation,
+p.explanation a{
+	font-size: 12px;
+}
+p.explanation{
+	color: #444;
+}
+
+td.inputlabel{
+	padding-right: 10px;
+}
+
+form h3{
+	margin-top: 0;
+	margin-bottom: 12px;
+}
+
+form h3.notfirst{
+	margin-top: 10px;
+}
+
+div.buttonline{
+	display: inline-block;
+	margin-top: 10px;
+}
+
+/* button#addDozent,
+button#removeDozent, */
+button/* ,
+input[type="file"] */{
+	background: #2184be;
+	color: #fff;
+	display: inline-block;
+	padding: .5em 1em;
+	text-decoration: none;
+	border: 0;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px
+}
+
+button:disabled{
+	background: #bdcfd9;
+	cursor: not-allowed;
+}
+
+button#removeDozent{
+	margin-left: 10px;
+}
+
+button.uploadbutton{
+	margin-top: 10px;
+}
+
+label[for="onlineumfrage"],
+label[for="papierumfrage"]{
+	margin-left: 5px;
+}
+
+.bold{
+	font-weight: bold;
+}
+
 div.fileupload_block{
-	margin-top: 5px;
+	margin-top: 10px;
 	margin-bottom: 5px;
 }
 
 div.fileupload_block .error{
 	margin: 0 !important;
+}
+
+input[type="file"]{
+	padding-right: 5px;
 }
 
 /* Workaround to ensure validation of input field but leave it invisible for user */
@@ -232,6 +307,10 @@ input.filecheck{
 	margin: 0;
 	padding: 0;
 	border: 0;
+}
+
+#teilnehmeranzahl{
+	margin-top: 10px;
 }
 
 /* Wrapper for table in bestellungen.php */

@@ -8473,7 +8473,7 @@ pre.css>.class {
     width: 30%
 }
 .wizard>.steps .number {
-    font-size: 1.429em
+    font-size: 18px;
 }
 .wizard>.steps>ul>li {
     width: 25%
@@ -8496,7 +8496,8 @@ pre.css>.class {
     text-decoration: none;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
-    border-radius: 5px
+    border-radius: 5px;
+	font-size: 18px;
 }
 .wizard>.steps .disabled a,
 .wizard>.steps .disabled a:hover,
@@ -8510,7 +8511,7 @@ pre.css>.class {
 .wizard>.steps .current a:active {
     background: #2184be;
     color: #fff;
-    cursor: default
+    cursor: default;
 }
 .wizard>.steps .done a,
 .wizard>.steps .done a:hover,
@@ -8547,7 +8548,7 @@ pre.css>.class {
 .wizard>.content>.body {
     float: left;
     position: relative;
-    width: 100%;
+    width: auto;
     height: auto;
     padding: 15px
 }
@@ -8566,8 +8567,18 @@ pre.css>.class {
     display: block;
     border: 1px solid #ccc
 }
+/* Show radio buttons on one line */
+.wizard>.content>.body input[type="radio"]{
+	display: inline;
+	/* margin-right: 5px; */
+	margin-bottom: 12px;
+}
 .wizard>.content>.body input[type="checkbox"] {
     display: inline-block
+}
+/* Offset from preceding radio input from the left */
+.wizard>.content>.body label.notlast{
+	margin-right: 5px;
 }
 .wizard>.content>.body input.error {
     background: #fbe3e4;
@@ -8575,13 +8586,13 @@ pre.css>.class {
     color: #8a1f11
 }
 .wizard>.content>.body label {
-    display: inline-block;
+    display: inline;
     margin-bottom: .5em
 }
 .wizard>.content>.body label.error {
     color: #8a1f11;
-    display: inline-block;
-    margin-left: 1.5em
+    display: block;
+    /* margin-left: 1.5em */
 }
 .wizard>.actions {
     position: relative;

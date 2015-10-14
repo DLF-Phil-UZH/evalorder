@@ -72,7 +72,7 @@ $num_rows = mysql_num_rows($var);
 					
 					echo "<input type=\"text\" name=\"filecheck1\" id=\"filecheck1_$result[id]\" class=\"filecheck\" value=\"\">\n
 						<input type=\"file\" id=\"fileselect1_$result[id]\" name=\"list1\"><br/>\n
-						<button type=\"button\" id=\"uploadbutton1_$result[id]\" onclick=\"uploadList(1, $result[id]);\">Hochladen</button>\n
+						<button type=\"button\" id=\"uploadbutton1_$result[id]\" class=\"uploadbutton\" onclick=\"uploadList(1, $result[id]);\">Hochladen</button>\n
 						<span id=\"filefeedback1_$result[id]\"></span>";
 					
 					echo "</td>";
@@ -86,7 +86,7 @@ $num_rows = mysql_num_rows($var);
 					
 					echo "<input type=\"text\" name=\"filecheck2\" id=\"filecheck2_$result[id]\" class=\"filecheck\" value=\"\">\n
 						<input type=\"file\" id=\"fileselect2_$result[id]\" name=\"list2\"><br/>\n
-						<button type=\"button\" id=\"uploadbutton2_$result[id]\" onclick=\"uploadList(2, $result[id]);\">Hochladen</button>\n
+						<button type=\"button\" id=\"uploadbutton2_$result[id]\" class=\"uploadbutton\" onclick=\"uploadList(2, $result[id]);\">Hochladen</button>\n
 						<span id=\"filefeedback2_$result[id]\"></span>";
 					
 					echo "</td></tr>";
