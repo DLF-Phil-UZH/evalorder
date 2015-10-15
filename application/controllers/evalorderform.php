@@ -39,6 +39,10 @@ class Evalorderform extends CI_Controller {
 							 'src' => base_url('/assets/js/messages_de.js'));
 		$jQuerySteps = array('type' => 'text/javascript',
 							 'src' => base_url('/assets/js/jquery.steps.js'));
+		$jQueryFancybox = array('type' => 'text/javascript',
+						  'src' => base_url('/assets/js/jquery.fancybox.js'));
+		$jQueryFancyboxThumbs = array('type' => 'text/javascript',
+									  'src' => base_url('/assets/js/jquery.fancybox-thumbs.js'));  
 		$orderformLibrary = array('type' => 'text/javascript',
 								  'src' => base_url('/assets/js/orderform_library.js'));
 		$orderform = array('type' => 'text/javascript',
@@ -50,7 +54,7 @@ class Evalorderform extends CI_Controller {
 										  'admin' => $admin,
 										  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
 										  'access' => ($user !== false),
-										  'scripts' => array($jQuery, $jQueryValidate, $jQueryValidateMessages, $jQuerySteps, $orderformLibrary, $orderform)));
+										  'scripts' => array($jQuery, $jQueryValidate, $jQueryValidateMessages, $jQuerySteps, $jQueryFancybox, $jQueryFancyboxThumbs, $orderformLibrary, $orderform)));
 		log_message('debug', 'evalorderform_F');
 		// Customize error messages of default rules
 		$this->form_validation->set_message('required', 'Das Feld "%s" darf nicht leer sein.');
@@ -90,9 +94,12 @@ class Evalorderform extends CI_Controller {
 		
 		$this->form_validation->set_rules('umfrageart', 'Umfrageart', 'trim|required|callback_checkUmfrageart');
 		
-		$this->form_validation->set_rules('sprache', 'Sprache', 'trim|required|callback_checkSprache');
+		// Language only needed for paper survey
+		if($this->input->post('umfrageart') === 'papierumfrage'){
+			$this->form_validation->set_rules('sprache', 'Sprache', 'trim|required|callback_checkSprache');
+		}
 		
-		$this->form_validation->set_rules('teilnehmeranzahl', 'Teilnehmeranzahl', 'trim');
+		$this->form_validation->set_rules('teilnehmeranzahl', 'Teilnehmeranzahl', 'trim|is_natural_no_zero');
 		
 		$validationResult = $this->form_validation->run($this);
 		
@@ -104,9 +111,9 @@ class Evalorderform extends CI_Controller {
 		// Text/option inputs are valid and paper survey was selected -> no upload needed
 		elseif($validationResult == TRUE && strcmp($this->input->post('umfrageart'), 'papierumfrage') == 0){
 			
-			echo "POST<br/><br/>";
-			print_r($this->input->post());
-			echo "<br/><br/>POST ENDE";
+			// echo "POST<br/><br/>";
+			// print_r($this->input->post());
+			// echo "<br/><br/>POST ENDE";
 			
 			// $lecturers = $this->_prepareLecturers($anzahlDozenten);
 			
@@ -123,7 +130,8 @@ class Evalorderform extends CI_Controller {
 			// );
 			
 			$course = $this->_prepareCourse($anzahlDozenten);
-			$course->setTurnout($this->input->post('teilnehmeranzahl'));
+			$course->setTurnout(intval($this->input->post('teilnehmeranzahl')));
+			$course->setLanguage($this->input->post('sprache'));
 			// Write to database
 			$this->load->model('Course_mapper');
 			$this->Course_mapper->storeOrder($course);
@@ -190,9 +198,9 @@ class Evalorderform extends CI_Controller {
 				// print_r($this->upload->data());
 				// echo "<br/><br/>UPLOADDATA";
 				
-			echo "POST<br/><br/>";
-			print_r($this->input->post());
-			echo "<br/><br/>POST";
+			// echo "POST<br/><br/>";
+			// print_r($this->input->post());
+			// echo "<br/><br/>POST";
 			
 			// log_message('debug', 'evalorderform_8');
 			
@@ -608,13 +616,13 @@ class Evalorderform extends CI_Controller {
 		else if(strcmp($pValue, "papierumfrage") == 0){
 			if(($teilnehmeranzahl = $this->input->post('teilnehmeranzahl')) !== FALSE){
 				if(is_numeric($teilnehmeranzahl) == TRUE){
-					if(intval($teilnehmeranzahl) >= 10){
+					// if(intval($teilnehmeranzahl) >= 10){
 						return TRUE;
-					}
-					else{
-						$this->form_validation->set_message('checkUmfrageart', 'Die Anzahl Teilnehmer f&uuml;r eine Papierumfrage muss mindestens 10 betragen, um eine Evaluation durchf&uuml;hren zu k&ouml;nnen.');
-						return FALSE;
-					}
+					// }
+					// else{
+						// $this->form_validation->set_message('checkUmfrageart', 'Die Anzahl Teilnehmer f&uuml;r eine Papierumfrage muss mindestens 10 betragen, um eine Evaluation durchf&uuml;hren zu k&ouml;nnen.');
+						// return FALSE;
+					// }
 				}
 				else{
 					$this->form_validation->set_message('checkUmfrageart', 'Das Feld "Anzahl Teilnehmer" darf nur nat&uuml;rliche Zahlen enthalten.');
@@ -684,7 +692,7 @@ class Evalorderform extends CI_Controller {
 			$lecturers,
 			$this->input->post('umfrageart'),
 			$this->config->item('survey_period'),
-			$this->input->post('sprache'),
+			// $this->input->post('sprache'),
 			$_SERVER['HTTP_GIVENNAME'],
 			$_SERVER['HTTP_SURNAME'],
 			$_SERVER['HTTP_MAIL'],

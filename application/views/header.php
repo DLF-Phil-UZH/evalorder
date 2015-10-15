@@ -8,6 +8,8 @@
 		echo meta('Content-type', 'text/html; charset=utf-8', 'equiv');
 		echo meta('description', 'Oliv');
 		echo link_tag(base_url('/assets/css/jquerysteps_modified.css')); // JQuery Steps, https://www.jquery-steps.com/Content/Examples?v=zY_RpLQAM_2YuBnTHKA2t9GIGyqXY4KhLU1OJRLrY8M1
+		echo link_tag(base_url('/assets/css/jquery.fancybox.css')); // JQuery Fancybox
+		echo link_tag(base_url('/assets/css/jquery.fancybox-thumbs.css')); // JQuery Fancybox Thumbnails
 		echo link_tag(base_url('/assets/css/uzh.css')); // UZH standard, lower priority
 		echo link_tag(base_url('/assets/css/oliv-common.css')); // Higher priority, customized
 		if(isset($scripts)){

@@ -148,12 +148,16 @@
 							<table>
 								<tbody>
 									<tr>
-										<td class="inputlabel"><?php echo form_label('Nachname', 'nachname_dozent_'); ?></td>
-										<td><input type="text" <?php echo produceNameIDTags('nachname_dozent_'); ?> size="50"/></td>
+										<td class="inputlabel"><?php echo form_label('Titel', 'titel_dozent_'); ?></td>
+										<td><input type="text" <?php echo produceNameIDTags('titel_dozent_'); ?> size="50"/></td>
 									</tr>
 									<tr>
 										<td class="inputlabel"><?php echo form_label('Vorname', 'vorname_dozent_'); ?></td>
 										<td><input type="text" <?php echo produceNameIDTags('vorname_dozent_'); ?> size="50"/></td>
+									</tr>
+									<tr>
+										<td class="inputlabel"><?php echo form_label('Nachname', 'nachname_dozent_'); ?></td>
+										<td><input type="text" <?php echo produceNameIDTags('nachname_dozent_'); ?> size="50"/></td>
 									</tr>
 									<tr>
 										<td class="inputlabel">Geschlecht</td>
@@ -163,10 +167,6 @@
 											<input type="radio" value="weiblich" id="dozent_weiblich_" name="geschlecht_dozent_" <?php echo set_radio('geschlecht_dozent_', 'weiblich'); ?> >
 											<label for="dozent_weiblich_">weiblich</label><?php // echo form_label('weiblich', 'dozent_weiblich_'); ?>
 										</td>
-									</tr>
-									<tr>
-										<td class="inputlabel"><?php echo form_label('Titel', 'titel_dozent_'); ?></td>
-										<td><input type="text" <?php echo produceNameIDTags('titel_dozent_'); ?> size="50"/></td>
 									</tr>
 									<tr>
 										<td class="inputlabel"><?php echo form_label('E-Mail-Adresse', 'email_dozent_'); ?></td>
@@ -216,16 +216,21 @@
 						<input type="radio" value="uebung" id="lvtyp_uebung" name="lvtyp">
 						<label for="lvtyp_uebung">&Uuml;bung</label>
 						
-						<h3 class="notfirst">Sprache</h3>
-						<input type="radio" value="deutsch" id="sprache_deutsch" name="sprache">
-						<label for="sprache_deutsch" class="notlast">Deutsch</label>
-						<input type="radio" value="englisch" id="sprache_englisch" name="sprache">
-						<label for="sprache_englisch" class="notlast">Englisch</label>
-						<input type="radio" value="italienisch" id="sprache_italienisch" name="sprache">
-						<label for="sprache_italienisch">Italienisch</label>
+						<div id="sprachwahl">
+							<h3 class="notfirst">Sprache</h3>
+							<input type="radio" value="deutsch" id="sprache_deutsch" name="sprache">
+							<label for="sprache_deutsch" class="notlast">Deutsch</label>
+							<input type="radio" value="englisch" id="sprache_englisch" name="sprache">
+							<label for="sprache_englisch" class="notlast">Englisch</label>
+							<input type="radio" value="italienisch" id="sprache_italienisch" name="sprache">
+							<label for="sprache_italienisch">Italienisch</label>
+						</div>
 						
 						<h3 class="notfirst">Vorschau Fragebogen</h3>
-						<p>Bild x (zum Vergr&ouml;ssern anklicken)</p>
+						<p id="formpreview_explanation" class="explanation"></p>
+						<a id="formpreview1" class="fancybox" rel="formpreview" href=""><img src="" alt="" /></a>
+						<a id="formpreview2" class="fancybox" rel="formpreview" href=""><img src="" alt="" /></a>
+						
 					</section>
 					<h2>Teilnehmer</h2>
 					<section>
@@ -333,17 +338,14 @@
 						// Step 4: Result(s) of list check (online surveys)
 						filecheck1: {
 							required: true
-							// equals: "success"
 						},
 						filecheck2: {
 							required: true
-							// equals: "success"
 						},
 						// Step 4: Participant number (paper surveys)
 						teilnehmeranzahl: {
 							required: true,
-							number: true,
-							min: 10
+							number: true
 						}
 					}
 				});

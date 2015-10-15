@@ -211,6 +211,127 @@ function setNumberOfLists(number){
 	}
 }
 
+function showHideLanguage(){
+	
+	// Online selected: hide language selection
+	if(document.getElementById("onlineumfrage").checked){
+		$("#sprachwahl").hide();
+		// Disable elements to avoid validation
+		document.getElementById('sprache_deutsch').disabled = true;
+		document.getElementById('sprache_englisch').disabled = true;
+		document.getElementById('sprache_italienisch').disabled = true;
+	}
+	// Paper-based selected: show language selection
+	else if(document.getElementById("papierumfrage").checked){
+		$("#sprachwahl").show();
+		// Enable elements to ensure validation
+		document.getElementById('sprache_deutsch').disabled = false;
+		document.getElementById('sprache_englisch').disabled = false;
+		document.getElementById('sprache_italienisch').disabled = false;
+	}
+	// Nothing selected: hide language selection
+	else{
+		$("#sprachwahl").hide();
+		// Disable elements to avoid validation
+		document.getElementById('sprache_deutsch').disabled = true;
+		document.getElementById('sprache_englisch').disabled = true;
+		document.getElementById('sprache_italienisch').disabled = true;
+	}
+
+}
+
+function capitalizeFirstLetter(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function displayFormPreview(){
+	var coursetype = "";
+	var lecturers = "";
+	var language = "";
+	var explanation = "";
+	
+	var baseURL = "https://www.uzh.ch/phil/static/dev/evalorder/assets/images/form_preview/";
+	
+	// Language
+	if($("#onlineumfrage").is(":checked")){
+		language = "D";
+		explanation = "Bei Online-Umfragen k&ouml;nnen Studierende die Sprache selber ausw&auml;hlen. In der Vorschau sehen Sie den deutschen Fragebogen.</br>";
+	}
+	else if($("#papierumfrage").is(":checked")){
+		if($("input:radio[name='sprache']").is(":checked")){
+			if($("input[name='sprache']:checked").val() === "englisch"){
+				language = "E";
+			}
+			// Show german form for italian as well unless italian form is available
+			else{
+				language = "D";
+			}
+		}
+		explanation = "";
+	}
+	else{
+		language = "";
+		explanation = "";
+	}
+
+	// Course type
+	if($("input:radio[name='lvtyp']").is(":checked")){
+		coursetype = capitalizeFirstLetter($("input[name='lvtyp']:checked").val());
+	}
+	else{
+		coursetype = "";
+	}
+	
+	// Number of lecturers
+	var currentNumberLecturers = parseInt($('#anzahlDozenten').val());	
+	if(currentNumberLecturers === 1){
+		lecturers = "e";
+	}
+	else if(currentNumberLecturers > 1){
+		lecturers = "m";
+	}
+	else{
+		lecturers = "";
+	}
+	
+	// Assemble image URLs if all necessary parameters are set
+	if(language.length > 0 && coursetype.length > 0 && lecturers.length > 0){
+		var imageURL1 = baseURL + coursetype + "_" + lecturers + "D_" + language + "_p1.jpg";
+		var imageURL2 = baseURL + coursetype + "_" + lecturers + "D_" + language + "_p2.jpg";
+		
+		// Set up images
+		$("#formpreview1").attr('href', imageURL1);
+		$("#formpreview1 img").attr('src', imageURL1);
+		$("#formpreview2").attr('href', imageURL2);
+		$("#formpreview2 img").attr('src', imageURL2);
+		
+		// Initalize fancybox
+		$(".fancybox").fancybox({
+			helpers: {
+				overlay: {
+					css: {
+						'background': 'rgba(150, 150, 150, 0.7)'
+					},
+					// Avoid scrolling
+					locked: false
+				}
+			}
+        });
+		
+		// Show preview elements
+		$("#formpreview_explanation").html(explanation + 'Klicken Sie auf eines der Bilder, um sie zu vergr&ouml;ssern.');
+		$("#formpreview1").show();
+		$("#formpreview2").show();
+	}
+	else{
+		// Hide preview elements
+		$("#formpreview_explanation").html('Vorschau nicht m&ouml;glich. Bitte w&auml;hlen Sie &uuml;berall eine Option aus.');
+		$("#formpreview1").hide();
+		$("#formpreview2").hide();
+	}
+	
+}
+
 function uploadList(number, course) {
 	
 	// Optional parameter, will only be set if called from backend

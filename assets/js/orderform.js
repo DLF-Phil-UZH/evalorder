@@ -19,6 +19,17 @@ $(document).ready(function(){
 	// Update survey (Umfrageart) fields
 	showHideUmfrageart();
 	
+	// Update language visibility
+	showHideLanguage();
+	
+	// Update form preview
+	displayFormPreview();
+	
+	// Add onclick events to all form inputs in step 3 for form preview handling
+	$('input:radio[name="umfrageart"], input:radio[name="lvtyp"], input:radio[name="sprache"]').change(displayFormPreview);
+	
+	$('input:radio[name="umfrageart"]').change(showHideLanguage);
+	
 	// Add validation method for string equality (used in hidden input for filecheck status)
 	$.validator.addMethod("equals", function(value, element, string){
 		return value === string;

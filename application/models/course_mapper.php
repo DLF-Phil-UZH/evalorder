@@ -27,7 +27,7 @@ class Course_mapper extends CI_Model{
 			'type' => $pCourse->getType(),
 			'surveyType' => $pCourse->getSurveyType(),
 			'semester' => $pCourse->getSemester(),
-			'language' => $pCourse->getLanguage(),
+			// 'language' => $pCourse->getLanguage(),
 			'ordererFirstname' => $pCourse->getOrdererFirstname(),
 			'ordererSurname' => $pCourse->getOrdererSurname(),
 			'ordererEmail' => $pCourse->getOrdererEmail(),
@@ -78,17 +78,25 @@ class Course_mapper extends CI_Model{
 		
 		// Save turnout
 		$turnout = $pCourse->getTurnout();
+		//log_message('debug', 'turnout = '.$turnout.'---type = '.gettype($turnout));
 		if(isset($turnout) && is_int($turnout)){
-			if(strcmp($pCourse->getSurveyType(), 'papierumfrage') === 0 && $turnout < 10){
-				log_message('error', 'storeOrder(): Invalid turnout.');
-				show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [zu wenig Teilnehmer f&uuml;r eine Papier-Umfrage]. Bitte versuchen Sie es nochmals.');
-			}
+			// if(strcmp($pCourse->getSurveyType(), 'papierumfrage') === 0 && $turnout < 10){
+				// log_message('error', 'storeOrder(): Invalid turnout.');
+				// show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [zu wenig Teilnehmer f&uuml;r eine Papier-Umfrage]. Bitte versuchen Sie es nochmals.');
+			// }
 			$this->db->where('id', $pCourse->getId());
 			$this->db->update($this->tableCourses, array('turnout' => $turnout));
 		}
 		else{
 			log_message('error', 'storeOrder(): Invalid turnout.');
 			show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [ung&uuml;ltige Teilnehmerzahl]. Bitte versuchen Sie es nochmals.');
+		}
+		
+		// Save language if existent
+		$language = $pCourse->getLanguage();
+		if(isset($language) && is_string($language) && (strlen($language) > 0)){
+			$this->db->where('id', $pCourse->getId());
+			$this->db->update($this->tableCourses, array('language' => $language));
 		}
 		
 		// Save participant file names if existent

@@ -287,6 +287,11 @@ label[for="papierumfrage"]{
 	font-weight: bold;
 }
 
+/* Thumbnails form preview images */
+.fancybox img{
+	height: 250px;
+}
+
 div.fileupload_block{
 	margin-top: 10px;
 	margin-bottom: 5px;

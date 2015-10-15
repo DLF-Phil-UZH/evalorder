@@ -38,13 +38,12 @@ class Course_model extends CI_Model{
 	}
 	
 	// Pseudo constructor to avoid warnings (see http://stackoverflow.com/questions/22688203/codeigniter-php-constructor-missing-argument-even-if-it-is-present)
-	public function initialSet($pName, $pType, $pLecturers, $pSurveyType, $pSemester, $pLanguage, $pOrdererFirstname, $pOrdererSurname, $pOrdererEmail, $pOrdererUniqueId){
+	public function initialSet($pName, $pType, $pLecturers, $pSurveyType, $pSemester, $pOrdererFirstname, $pOrdererSurname, $pOrdererEmail, $pOrdererUniqueId){
 		$this->name = $pName;
 		$this->type = $pType;
 		$this->lecturers = $pLecturers;
 		$this->surveyType = $pSurveyType;
 		$this->semester = $pSemester;
-		$this->language = $pLanguage;
 		$this->ordererFirstname = $pOrdererFirstname;
 		$this->ordererSurname = $pOrdererSurname;
 		$this->ordererEmail = $pOrdererEmail;
