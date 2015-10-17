@@ -182,28 +182,40 @@ function removeLastDozent(){
 function setNumberOfLists(number){
 	if(typeof number === 'number'){
 		if(number == 0){
+			$("#fileupload_explanation").hide();
+			
+			$("#fileupload_block1").hide();
 			document.getElementById('fileselect1').disabled = true;
 			document.getElementById('uploadbutton1').disabled = true;
 			document.getElementById('filecheck1').disabled = true;
 			
+			$("#fileupload_block2").hide();
 			document.getElementById('fileselect2').disabled = true;
 			document.getElementById('uploadbutton2').disabled = true;
 			document.getElementById('filecheck2').disabled = true;
 		}
 		else if(number == 1){
+			$("#fileupload_explanation").show();
+			
+			$("#fileupload_block1").show();
 			document.getElementById('fileselect1').disabled = false;
 			document.getElementById('uploadbutton1').disabled = false;
 			document.getElementById('filecheck1').disabled = false;
 			
+			$("#fileupload_block2").hide();
 			document.getElementById('fileselect2').disabled = true;
 			document.getElementById('uploadbutton2').disabled = true;
 			document.getElementById('filecheck2').disabled = true;
 		}
 		else if(number == 2){
+			$("#fileupload_explanation").show();
+			
+			$("#fileupload_block1").show();
 			document.getElementById('fileselect1').disabled = false;
 			document.getElementById('uploadbutton1').disabled = false;
 			document.getElementById('filecheck1').disabled = false;
 			
+			$("#fileupload_block2").show();
 			document.getElementById('fileselect2').disabled = false;
 			document.getElementById('uploadbutton2').disabled = false;
 			document.getElementById('filecheck2').disabled = false;
@@ -219,7 +231,7 @@ function showHideLanguage(){
 		// Disable elements to avoid validation
 		document.getElementById('sprache_deutsch').disabled = true;
 		document.getElementById('sprache_englisch').disabled = true;
-		document.getElementById('sprache_italienisch').disabled = true;
+		//document.getElementById('sprache_italienisch').disabled = true;
 	}
 	// Paper-based selected: show language selection
 	else if(document.getElementById("papierumfrage").checked){
@@ -227,7 +239,7 @@ function showHideLanguage(){
 		// Enable elements to ensure validation
 		document.getElementById('sprache_deutsch').disabled = false;
 		document.getElementById('sprache_englisch').disabled = false;
-		document.getElementById('sprache_italienisch').disabled = false;
+		//document.getElementById('sprache_italienisch').disabled = false;
 	}
 	// Nothing selected: hide language selection
 	else{
@@ -235,7 +247,7 @@ function showHideLanguage(){
 		// Disable elements to avoid validation
 		document.getElementById('sprache_deutsch').disabled = true;
 		document.getElementById('sprache_englisch').disabled = true;
-		document.getElementById('sprache_italienisch').disabled = true;
+		//document.getElementById('sprache_italienisch').disabled = true;
 	}
 
 }
@@ -307,6 +319,7 @@ function displayFormPreview(){
 		
 		// Initalize fancybox
 		$(".fancybox").fancybox({
+			closeBtn: true,
 			helpers: {
 				overlay: {
 					css: {
@@ -315,6 +328,9 @@ function displayFormPreview(){
 					// Avoid scrolling
 					locked: false
 				}
+			},
+			afterShow: function() {
+				$(".fancybox-close").show();
 			}
         });
 		

@@ -36,7 +36,7 @@ class Welcome extends CI_Controller {
 			redirect('evalorderform');
 		}
 		
-		$this->load->view('header', array('title' => 'Oliv',
+		$this->load->view('header', array('title' => 'Eva',
 										  'page' => 'Willkommen',
 										  'width' => 'small',
 										  'admin' => $admin,

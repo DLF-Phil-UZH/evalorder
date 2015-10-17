@@ -2,8 +2,6 @@
 
 class Auth extends CI_Controller {
 
-	private $table_user_requests = "oliv_user_requests"; // Name of database table
-
 	public function __construct() {
 		parent::__construct();
 		$this->load->library('shibboleth_authentication_service', NULL, 'shib_auth');
@@ -35,7 +33,7 @@ class Auth extends CI_Controller {
 		}
 		// If user hasn't logged in over AAI yet, send him to login page
 		else{
-			$this->load->view('header', array('title' => 'EvalOrder: Authentifizierung',
+			$this->load->view('header', array('title' => 'Eva: Authentifizierung',
 										  'page' => 'authentification',
 										  'width' => 'small',
                                           'logged_in' => false,

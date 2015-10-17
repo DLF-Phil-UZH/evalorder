@@ -23,20 +23,21 @@ $num_rows = mysql_num_rows($var);
 ?>
 
 	<div class="oliv_content">
-		<p>Gefundene Bestellungen: <?php echo $num_rows;?></p>
+		<p>Gefundene Bestellungen: <span class="bold"><?php echo $num_rows; ?></span></p>
+		<p>Bestellungen f&uuml;r: <span class="bold"><?php echo $survey_period; ?></span></p>
 		<div id="bestellungen">
 			<?php
 			echo "<table id=\"bestellungen_table\" class=\"tablesorter\">";
 			echo "<thead>";
-			echo "<tr class=\"even\"><th class=\"export\">Exportieren<span></span></th><th>Zuletzt exportiert<span></span></th><th>Umfragetyp<span></span></th><th>Dozent(en)<span></span></th>";
-			echo "<th>Name<span></span></th><th>Veranstaltungstyp<span></span></th><th>Semester<span></span></th>";
+			echo "<tr class=\"even\"><th>Expor-<br/>tieren<span></span></th><th>Zuletzt exportiert<span></span></th><th>Bestellt am<span></span></th><th>Umfrage-<br/>typ<span></span></th><th>Dozent(en)<span></span></th>";
+			echo "<th>Name<span></span></th><th>LV-Typ<span></span></th>";
 			echo "<th>TN-Liste 1<span></span></th>";
 			echo "<th>TN-Liste 2<span></span></th></tr>";
 			echo "</thead>";
 			echo "<tbody>";
-			$rownumber = 0;
+			// $rownumber = 0;
 			while ($result = mysql_fetch_array($var)){
-				$rownumber++;
+				// $rownumber++;
 				// Add different background color on every second row
 				// if($rownumber % 2 == 0){
 					// echo '<tr class="zebra">';
@@ -44,7 +45,8 @@ $num_rows = mysql_num_rows($var);
 				// else{
 					echo '<tr>';
 				// }
-				echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td><td>$result[lastExport]</td><td>$result[surveyType]</td>";
+				$surveyType = str_replace("umfrage", "", $result["surveyType"]); // Remove "umfrage" to save space
+				echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td><td>$result[lastExport]</td><td>$result[orderTime]</td><td>" . $surveyType . "</td>";
 				
 				$query2  = "SELECT evalorder_lecturers.surname, evalorder_lecturers.firstname, evalorder_courses.name, evalorder_courses.id AS id FROM evalorder_lecturers INNER JOIN";
 				$query2 .= " evalorder_courses_lecturers ON evalorder_lecturers.id = evalorder_courses_lecturers.lecturer_id INNER JOIN";
@@ -63,7 +65,7 @@ $num_rows = mysql_num_rows($var);
 				$comma_separated = implode(", ", $dozenten);
 				echo "<td>$comma_separated</td>";
 				
-				echo "<td>$result[name]</td><td>$result[type]</td><td>$result[semester]</td>";
+				echo "<td>$result[name]</td><td>$result[type]</td>";
 				if($result['participantFile1']){
 					echo "<td>$result[participantFile1]</td>";
 				}

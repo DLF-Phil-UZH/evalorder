@@ -20,7 +20,7 @@ class Admin extends CI_Controller {
 	}
 
 	public function index(){
-	    redirect(site_url('/admin/bestellungen'));	
+	    redirect(site_url('/admin/bestellungen'));
 	}
 
 	public function bestellungen(){

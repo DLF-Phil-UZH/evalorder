@@ -48,8 +48,8 @@ class Evalorderform extends CI_Controller {
 		$orderform = array('type' => 'text/javascript',
 						   'src' => base_url('/assets/js/orderform.js'));
 		log_message('debug', 'evalorderform_E');
-		$this->load->view('header', array('title' => 'Oliv',
-										  'page' => 'Willkommen',
+		$this->load->view('header', array('title' => 'Eva',
+										  'page' => 'Bestellen',
 										  'width' => 'small',
 										  'admin' => $admin,
 										  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
@@ -136,7 +136,8 @@ class Evalorderform extends CI_Controller {
 			$this->load->model('Course_mapper');
 			$this->Course_mapper->storeOrder($course);
 			
-			$this->load->view('ordersuccess');
+			$this->load->view('ordersuccess', array('access' => ($user !== false),
+													'nolists' => FALSE));
 		}
 		
 		// Text/option inputs are valid and online survey was selected -> check upload of participant list now
@@ -315,9 +316,9 @@ class Evalorderform extends CI_Controller {
 				$this->load->model('Course_mapper');
 				$this->Course_mapper->storeOrder($course);
 				
-				// TODO: Temporary until correct data processing is implemented
-				$this->load->view('ordersuccess');
-			
+				$this->load->view('ordersuccess', array('access' => ($user !== false),
+														// True if no list has been uploaded by user
+														'nolists' => !($this->input->post('filecheck1') != FALSE || $this->input->post('filecheck2') != FALSE)));
 			
 			log_message('debug', 'evalorderform_13');
 				
@@ -344,11 +345,12 @@ class Evalorderform extends CI_Controller {
 	}
 	
 	// Callback for checking field of language (Sprache)
+	// Italian not available yet
 	public function checkSprache($pValue){
 		log_message('debug', 'callback_checkSprache: pValue = ' . $pValue);
 		if(strcmp($pValue, "englisch") == 0 ||
-		   strcmp($pValue, "deutsch") == 0 ||
-		   strcmp($pValue, "italienisch") == 0){
+		   strcmp($pValue, "deutsch") == 0 /* ||
+		   strcmp($pValue, "italienisch") == 0*/){
 			return TRUE;
 		}
 		else{

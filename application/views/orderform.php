@@ -4,17 +4,14 @@
 		<?php
 		if(isset($access) && $access === true){ ?>
 			
-			<h2>Bestellung einer Evaluation Ihrer Lehrveranstaltung</h2>
-
-			<p>Bestellen Sie hier bequem f&uuml;r Ihre Lehrveranstaltung an [der Philosophischen Fakult&auml;t] der Universit&auml;t Z&uuml;rich eine Evaluation, die wir f&uuml;r Sie zusammen mit der Hochschuldidaktik &uuml;ber die Evaluationssoftware EvaSys abwickeln.</p>
-			<p>F&uuml;llen Sie dazu alle Felder komplett und korrekt (gem&auml;ss den Angaben aus dem <a target="_blank" href="http://www.vorlesungen.uzh.ch/">Vorlesungsverzeichnis</a>) aus, um einen reibungs- und fehlerlosen Ablauf der Evaluation zu gew&auml;hrleisten.</p>
-			<p><strong>Wichtig:</strong> Damit eine Evaluation g&uuml;ltig ist, ist ein R&uuml;cklauf von mindestens 10 Studierenden Voraussetzung. Bei einer kleineren Anzahl Studierenden empfiehlt es sich eher, eine papierbasierte Umfrage durchzuf&uuml;hren, weil die R&uuml;cklaufquote in einer Sitzung erfahrungsgem&auml;ss h&ouml;her ausf&auml;llt und so die Chancen auf die Mindestanzahl h&ouml;her sind. Bei einer gen&uuml;gend grossen Anzahl Studierenden raten wir zu einer Online-Umfrage, da diese f&uuml;r Sie und die Studierenden komfortabel auf digitalem Weg abgewickelt wird.</p>
-
-			<h3>Zeitlicher Ablauf</h3>
-
-			<p>Bestellungen k&ouml;nnen bis am xx.xx.2015 &uuml;ber dieses Formular aufgegeben werden.</p>
-			<p>Falls Sie Ihre Evaluation online durchf&uuml;hren m&ouml;chten, werden am xx.xx.2015 die Teilnahmelinks an alle Studierenden per E-Mail verschickt.<br/>Am xx.xx.2015 wird eine Erinnerung per E-Mail an diejenigen Studierenden geschickt, die noch nicht an der Evaluation teilgenommen haben.<br/>Am xx.xx.2015 um xx.xx Uhr wird die Evaluation geschlossen und ausgewertet. Die Dozierenden erhalten anschliessend die anonymisierten Ergebnisse per E-Mail zugeschickt.</p>
-			<p>Falls Sie Ihre Evaluation papierbasiert durchf&uuml;hren m&ouml;chten, werden Sie am xx.xx.2015 mit der angegebenen Anzahl Umfrageb&ouml;gen durch die Hochschuldidaktik ausgestattet, die Sie in einer Ihrer Sitzungen an die Studierenden austeilen, ausgef&uuml;llt wieder einsammeln und an die Hochschuldidaktik retournieren.<br/>Sp&auml;testens am xx.xx.2015 werden Ihnen die anonymisierten Ergebnisse durch die Hochschuldidaktik zugestellt.</p>
+			<h2>Eva &ndash; Bestellung von Lehrevaluationen</h2>
+			
+			<p>Bestellen Sie hier freiwillige Evaluationen Ihrer Lehrveranstaltungen.</p>
+			
+			<h3>Bestellungen f&uuml;r das laufende Semester</h3>
+						
+			<p>Bestellungen k&ouml;nnen bis am 9. November 2015 &uuml;ber dieses Formular aufgegeben werden.</p>
+			<p>Sie geben pro Veranstaltung eine Bestellung auf.</p>
 
 			<?php
 			// Display errors from text/option inputs
@@ -125,7 +122,7 @@
 			<div><input type="submit" value="Bestellen" /></div>
 			-->
 			
-			</form>
+			<!-- </form> -->
 			
 			<!-- JQuery Steps -->
 			<?php $attributes = array('id' => 'evalorderform'); ?>
@@ -222,8 +219,8 @@
 							<label for="sprache_deutsch" class="notlast">Deutsch</label>
 							<input type="radio" value="englisch" id="sprache_englisch" name="sprache">
 							<label for="sprache_englisch" class="notlast">Englisch</label>
-							<input type="radio" value="italienisch" id="sprache_italienisch" name="sprache">
-							<label for="sprache_italienisch">Italienisch</label>
+							<!-- <input type="radio" value="italienisch" id="sprache_italienisch" name="sprache">
+							<label for="sprache_italienisch">Italienisch</label> -->
 						</div>
 						
 						<h3 class="notfirst">Vorschau Fragebogen</h3>
@@ -242,17 +239,24 @@
 								<?php //echo form_label('XLS-Teilnehmerdatei aus OLAT (<a href="">>> Anleitung zum Herunterladen Ihrer Teilnehmerliste</a>)', 'teilnehmerdatei'); ?><!--<input type="file" <?php // echo produceNameIDTags('teilnehmerdatei'); ?> size="50">-->
 								<!-- Number of lists to upload -->
 								<input type="radio" name="filenumber" id="nofiles" value="Keine Teilnehmerliste(n) hochladen" onclick="setNumberOfLists(0);">
-								<label for="nofiles" class="notlast"><span class="bold">Keine Teilnehmerlisten hochladen:</span> Laden Sie keine Teilnehmerliste hoch, aber tragen daf&uuml;r <i>schornoc</i>, <i>sodok_elk</i> und <i>shodel_elk</i> als Besitzer in Ihren OLAT-Kurs ein (&gt;&gt; <i>Detailansicht</i> &gt;&gt; <i>Besitzer verwalten</i> &gt;&gt; <i>Importieren</i> &gt;&gt; die drei Namen je auf eine Zeile &gt;&gt; <i>Weiter</i> &gt;&gt; <i>Abschliessen</i>).</label>
+								<label for="nofiles" class="notlast"><span class="bold">Keine Teilnehmerlisten hochladen:</span> Laden Sie keine Teilnehmerliste hoch, aber tragen daf&uuml;r <span class="techterm">schornoc</span>, <span class="techterm">sodok_elk</span> und <span class="techterm">shodel_elk</span> als Besitzer in Ihren OLAT-Kurs ein (&gt;&gt; <span class="techterm">Detailansicht</span> &gt;&gt; <span class="techterm">Besitzer verwalten</span> &gt;&gt; <span class="techterm">Importieren</span> &gt;&gt; die drei Namen je auf eine Zeile &gt;&gt; <span class="techterm">Weiter</span> &gt;&gt; <span class="techterm">Fertigstellen</span>).</label>
 								<br/>
 								<input type="radio" name="filenumber" id="file1" value="file1enable" onclick="setNumberOfLists(1);">
 								<label for="file1" class="notlast"><span class="bold">1 Liste hochladen:</span> Laden Sie die Teilnehmerliste aus der Campusgruppe A hoch, falls Ihre Auditoren <i>nicht</i> an der Evaluation teilnehmen sollen.</label>
 								<br/>
 								<input type="radio" name="filenumber" id="file2" value="file2enable" onclick="setNumberOfLists(2);">
 								<label for="file2"><span class="bold">2 Listen hochladen:</span> Laden Sie die Teilnehmerliste aus der Campusgruppe A und B hoch, falls Ihre Auditoren an der Evaluation teilnehmen sollen.</label>
+								<p>
+							</div>
+							
+							<div id="fileupload_explanation">
+								<!-- Idea icon source: http://findicons.com/icon/558374/idea?id=558374 -->
+								<p class="explanation"><img src="<?php echo base_url('/assets/images/idea.png'); ?>"><a href="https://www.youtube.com/watch?v=Yqh-Ospb4g4" target="_blank">Anleitungsvideo</a>, das Schritt f&uuml;r Schritt erkl&auml;rt, wie Sie eine Teilnehmerliste aus Ihrem OLAT-Kurs herunterladen k&ouml;nnen.</p>
 							</div>
 							
 							<!-- List 1 -->
-							<div class="fileupload_block">
+							<div id="fileupload_block1" class="fileupload_block">
+								Campusgruppe A
 								<input type="text" name="filecheck1" id="filecheck1" class="filecheck" value="">
 								<input type="file" id="fileselect1" name="list1">
 								<button type="button" id="uploadbutton1" class="uploadbutton" onclick="uploadList(1);">Hochladen</button>
@@ -260,7 +264,8 @@
 							</div>
 							
 							<!-- List 2 -->
-							<div class="fileupload_block">
+							<div id="fileupload_block2" class="fileupload_block">
+								Campusgruppe B
 								<input type="text" name="filecheck2" id="filecheck2" class="filecheck" value="">
 								<input type="file" id="fileselect2" name="list2">
 								<button type="button" id="uploadbutton2" class="uploadbutton" onclick="uploadList(2);">Hochladen</button>
@@ -277,6 +282,14 @@
 					</section>
 				</div>
 			</form>
+			
+			<p class="afterform">Probleme mit dem Bestellvorgang? Rufen Sie uns an unter (044 63)4 50 84.</p>
+			
+			<h3>FAQ</h3>
+			<p><span class="bold">Wie gross ist die Mindestanzahl Studierender, damit die Evaluation valide wird?</span><br/>Methodisch braucht es etwa zehn Studierende, damit die Resultate aussagekr&auml;ftig werden. Aber als Diskussionsanlass k&ouml;nnen Sie die Frageb&ouml;gen auch von weniger als zehn Studierender ausf&uuml;llen lassen.</p>
+			<p><span class="bold">F&uuml;r wen gilt dieses Angebot?</span><br/>Wir bieten Eva allen Dozierenden der PhF an.</p>
+			<p><span class="bold">Wird die Auswertung nur mir oder auch dem Institut, f&uuml;r das ich lehre, zugesandt?</span><br/>Nur Ihnen.</p>
+			<p><span class="bold">Kann ich eigene Fragen erg&auml;nzen?</span><br/>Leider nicht; wir verwenden Standard-Frageb&ouml;gen. Aber die letzte Frage ist eine offene. Bitten Sie Ihre Studierenden, Ihnen dort zu Themen, die  Ihnen wichtig sind, ein Feedback zu geben.</p>
 			
 			<!-- JQuery Steps -->
 			<script type="text/javascript">
@@ -303,7 +316,6 @@
 					onFinished: function (event, currentIndex)
 					{
 						form.submit();
-						alert("Submitted!");
 					},
 					/* Labels in german */
 					labels: {
@@ -354,7 +366,7 @@
 			
 		<?php }
 		else{ ?>
-			<p>Sie m&uuml;ssen sich anmelden, um auf EvalOrder zugreifen zu k&ouml;nnen: <a href="<?php echo site_url('auth'); ?>">Anmelden</a>.</p>
+			<p>Sie m&uuml;ssen sich anmelden, um auf Eva zugreifen zu k&ouml;nnen: <a href="<?php echo site_url('auth'); ?>">Anmelden</a>.</p>
 		<?php } ?>
 	</div>
 
