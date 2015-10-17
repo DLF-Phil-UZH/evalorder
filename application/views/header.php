@@ -6,7 +6,7 @@
         <title><?php echo $title; ?></title>
 		<?php
 		echo meta('Content-type', 'text/html; charset=utf-8', 'equiv');
-		echo meta('description', 'Oliv');
+		echo meta('description', 'Eva');
 		echo link_tag(base_url('/assets/css/jquerysteps_modified.css')); // JQuery Steps, https://www.jquery-steps.com/Content/Examples?v=zY_RpLQAM_2YuBnTHKA2t9GIGyqXY4KhLU1OJRLrY8M1
 		echo link_tag(base_url('/assets/css/jquery.fancybox.css')); // JQuery Fancybox
 		echo link_tag(base_url('/assets/css/jquery.fancybox-thumbs.css')); // JQuery Fancybox Thumbnails
@@ -56,11 +56,11 @@
                 </div>
 				<div id="olivlogo">
 					<a href="http://www.phil.uzh.ch/fakultaet/dlf.html">
-						<img alt="oliv logo" height="80" src="<?php echo base_url('/assets/images/oliv.png'); ?>" width="133" />
+						<img alt="eva logo" height="80" src="<?php echo base_url('/assets/images/eva.gif'); ?>" width="133" />
 					</a>
                 </div>
                	<h1 style="clear:both">
-					<a href="<?php echo site_url('welcome'); ?>">EvalOrder</a>
+					<a href="<?php echo site_url('welcome'); ?>">Eva</a>
 				</h1>
 			</div>
 			<div class="floatclear">

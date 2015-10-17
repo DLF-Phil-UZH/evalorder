@@ -21,6 +21,14 @@ a
     font-size: 14px;
 }
 
+h2{
+	font-size: 1.4em;
+}
+
+h3{
+	font-size: 1.2em;
+}
+
 a:hover
 {
 	text-decoration: underline;
@@ -56,7 +64,7 @@ div.oliv_content
 div#olivlogo
 {
 	padding: 14px 17px 0 0;
-	height:80px;
+	height: 80px;
 	width: 133px;
 	float: right;
 }
@@ -182,6 +190,7 @@ div.footertopnav
     clear: both; */
 	margin-left: 20px;
 	margin-right: 20px;
+	padding-top: 0;
 }
 
 div#footer
@@ -252,7 +261,8 @@ div.buttonline{
 
 /* button#addDozent,
 button#removeDozent, */
-button/* ,
+button,
+a.buttonlike/* ,
 input[type="file"] */{
 	background: #2184be;
 	color: #fff;
@@ -292,6 +302,16 @@ label[for="papierumfrage"]{
 	height: 250px;
 }
 
+div#fileupload_explanation{
+	margin-top: 20px;
+}
+
+div#fileupload_explanation img{
+	height: 24px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
 div.fileupload_block{
 	margin-top: 10px;
 	margin-bottom: 5px;
@@ -316,6 +336,20 @@ input.filecheck{
 
 #teilnehmeranzahl{
 	margin-top: 10px;
+}
+
+/* Move it on same height as forward/back buttons */
+p.afterform{
+	margin-top: -55px;
+}
+
+.warning{
+	color: #FF0000;
+}
+
+.techterm{
+	font-style: italic;
+	font-weight: bold;
 }
 
 /* Wrapper for table in bestellungen.php */
