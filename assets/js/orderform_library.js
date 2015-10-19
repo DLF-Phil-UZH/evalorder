@@ -262,7 +262,11 @@ function displayFormPreview(){
 	var language = "";
 	var explanation = "";
 	
-	var baseURL = "https://www.uzh.ch/phil/static/dev/evalorder/assets/images/form_preview/";
+	// Add full base URL of application with trailing slash
+	// Example:
+	// var baseURL = "https://www.uzh.ch/phil/static/dev/evalorder/";
+	var baseURL = "";
+	var imagefolderURL = baseURL + "assets/images/form_preview/"; 
 	
 	// Language
 	if($("#onlineumfrage").is(":checked")){
@@ -308,8 +312,8 @@ function displayFormPreview(){
 	
 	// Assemble image URLs if all necessary parameters are set
 	if(language.length > 0 && coursetype.length > 0 && lecturers.length > 0){
-		var imageURL1 = baseURL + coursetype + "_" + lecturers + "D_" + language + "_p1.jpg";
-		var imageURL2 = baseURL + coursetype + "_" + lecturers + "D_" + language + "_p2.jpg";
+		var imageURL1 = imagefolderURL + coursetype + "_" + lecturers + "D_" + language + "_p1.jpg";
+		var imageURL2 = imagefolderURL + coursetype + "_" + lecturers + "D_" + language + "_p2.jpg";
 		
 		// Set up images
 		$("#formpreview1").attr('href', imageURL1);
@@ -388,8 +392,14 @@ function uploadList(number, course) {
 			// Set up the request.
 			var xhr = new XMLHttpRequest();
 			
+			
+			// Add full base URL of application with trailing slash
+			// Example:
+			// var baseURL = "https://www.uzh.ch/phil/static/dev/evalorder/";
+			var baseURL = "";
+			var uploadAddress = baseURL + 'evalorderform/uploadfile';
 			// Open the connection.
-			xhr.open('POST', 'https://www.uzh.ch/phil/static/dev/evalorder/evalorderform/uploadfile' + uriAddition, true);
+			xhr.open('POST', uploadAddress + uriAddition, true);
 			// Set up a handler for when the request finishes.
 			xhr.onload = function(){
 				if(xhr.status === 200) {
