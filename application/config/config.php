@@ -369,5 +369,20 @@ $config['proxy_ips'] = '';
 */
 $config['xls_folder'] = '/usr/local/ftp/phil/evalorder/files/';
 
+
+/*
+|--------------------------------------------------------------------------
+| Database: Table names
+|--------------------------------------------------------------------------
+|
+| Names of the tables used in the database
+|
+*/
+$config['table_courses'] = 'eva_courses';
+$config['table_courses_lecturers'] = 'eva_courses_lecturers';
+$config['table_lecturers'] = 'eva_lecturers';
+$config['table_participants'] = 'eva_participants';
+
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

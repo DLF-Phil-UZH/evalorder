@@ -42,7 +42,7 @@
 			<div id="topline">
                 <?php
                 if (isset($logged_in) && $logged_in) { 
-                    echo '<p id="logout"><a href="' /* . site_url('/auth/logout') */ . '" >Abmelden</a></p>';
+                    echo '<p id="logout"><a href="' . site_url('/auth/logout') . '" >Abmelden</a></p>';
                 } ?>
 				<p>Evaluationsbestellung</p>
             </div>
@@ -50,12 +50,12 @@
 			</div>
 			<div id="headerarea">
 				<div id="uzhlogo">
-					<a href="http://www.uzh.ch">
+					<a href="http://www.uzh.ch" target="_blank">
 						<img alt="uzh logo" height="80" src="<?php echo base_url('/assets/images/uzh_logo_d_pos_web_main.jpg'); ?>" width="231" />
 					</a>
                 </div>
 				<div id="olivlogo">
-					<a href="http://www.phil.uzh.ch/fakultaet/dlf.html">
+					<a href="http://www.phil.uzh.ch/fakultaet/dlf/angebot/lehrveranstaltungsevaluation.html" target="_blank">
 						<img alt="eva logo" height="80" src="<?php echo base_url('/assets/images/eva.gif'); ?>" width="133" />
 					</a>
                 </div>

@@ -45,28 +45,15 @@ class Auth extends CI_Controller {
 	}
 
 	/**
-	 *
+	 * Logs out user for application use, but does not delete authentification cookies.
+	 * Browser has to be closed in order to completely log out from AAI.
 	 */
-	/*
+	
     public function logout() {
         if (!$this->shib_auth->verify_shibboleth_session()) {
             redirect('auth');
             return;
 		}
-
-        $user = $this->shib_auth->verify_user();
-        if ($user != false) {
-            // TODO: clean up locks
-            // $this->shib_auth->log_out();
-            $user_id = $user->getId();
-
-            $this->load->library('Grocery_CRUD');
-            $grocery_crud = new Grocery_CRUD($user);
-            $success = $grocery_crud->unlock_all_records();
-            if (!$success) {
-                // TODO: log some error message
-            }
-        }
 
         // TODO: Display, login link / hide logout link in Header
         $this->load->view('header', array('title' => 'Oliv: Abgemeldet',
@@ -78,7 +65,7 @@ class Auth extends CI_Controller {
         $this->load->view('footer');
 
     }
-	*/
+	
 	
 }
 

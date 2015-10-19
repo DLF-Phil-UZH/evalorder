@@ -430,7 +430,7 @@ class Evalorderform extends CI_Controller {
 						$this->db->trans_start();
 						
 						$this->db->where('id', $pCourseId);
-						$this->db->update('evalorder_courses', array('participantFile' . $pFileNumber => $storeResult['filename']));
+						$this->db->update($this->config->item('table_courses'), array('participantFile' . $pFileNumber => $storeResult['filename']));
 						
 						$this->db->trans_complete();
 						log_message('debug', 'uploadfile_14');
@@ -509,7 +509,6 @@ class Evalorderform extends CI_Controller {
 
 	private function _storeParticipantList($file){
 		log_message('debug', '_storeParticipantList');
-		// define("UPLOAD_DIR", "./uploads/");
 		$uploadDirectory = $this->config->item('xls_folder');
 		log_message('debug', '_storeParticipantList');
 		if($file["error"] !== UPLOAD_ERR_OK){

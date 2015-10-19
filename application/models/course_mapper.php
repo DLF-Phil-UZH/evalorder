@@ -3,15 +3,24 @@
 class Course_mapper extends CI_Model{
 	
 	// Database tables
-	private $tableCourses = 'evalorder_courses';
-	private $tableLecturers = 'evalorder_lecturers';
-	private $tableParticipants = 'evalorder_participants';
-	private $tableMapping = 'evalorder_courses_lecturers';
+	private $tableCourses;
+	private $tableLecturers;
+	private $tableParticipants;
+	private $tableMapping;
 	
 	public function __construct(){
 		parent::__construct();
 		$this->load->database();
 		$this->load->model('Course_model');
+		$this->setTableNames();
+	}
+	
+	// Sets table names out of config, cannot be done directly on declaration of variables since config is not loaded yet at this point of execution
+	private function setTableNames(){
+		$this->tableCourses = $this->config->item('table_courses');
+		$this->tableLecturers = $this->config->item('table_lecturers');
+		$this->tableParticipants = $this->config->item('table_participants');
+		$this->tableMapping = $this->config->item('table_courses_lecturers');
 	}
 	
 	// Write evaluation order for course to database

@@ -8,6 +8,10 @@ $dbuser = $this->db->username;
 $dbpass = $this->db->password;
 $dbname = $this->db->database;
 
+$tableCourses = $this->config->item('table_courses');
+$tableCoursesLecturers = $this->config->item('table_courses_lecturers');
+$tableLecturers = $this->config->item('table_lecturers');
+
 mysqli_connect($dbhost, $dbuser, $dbpass);
 mysql_select_db($dbname);
 mysql_query("set names utf8");
@@ -15,7 +19,7 @@ mysql_query("set names utf8");
 $this->config->load('standardwerte_config');
 $survey_period=$this->config->item('survey_period');
 
-$query = "SELECT * FROM evalorder_courses WHERE semester='$survey_period'";
+$query = "SELECT * FROM " . $tableCourses . " WHERE semester='$survey_period'";
 
 $var = mysql_query($query);
 $num_rows = mysql_num_rows($var);
@@ -48,9 +52,10 @@ $num_rows = mysql_num_rows($var);
 				$surveyType = str_replace("umfrage", "", $result["surveyType"]); // Remove "umfrage" to save space
 				echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td><td>$result[lastExport]</td><td>$result[orderTime]</td><td>" . $surveyType . "</td>";
 				
-				$query2  = "SELECT evalorder_lecturers.surname, evalorder_lecturers.firstname, evalorder_courses.name, evalorder_courses.id AS id FROM evalorder_lecturers INNER JOIN";
-				$query2 .= " evalorder_courses_lecturers ON evalorder_lecturers.id = evalorder_courses_lecturers.lecturer_id INNER JOIN";
-				$query2 .= " evalorder_courses ON evalorder_courses_lecturers.course_id = evalorder_courses.id";
+				$query2  = "SELECT " . $tableLecturers . ".surname, " . $tableLecturers . ".firstname, " . $tableCourses . ".name, " . $tableCourses . ".id AS id FROM " . $tableLecturers . " INNER JOIN";
+				$query2 .= " " . $tableCoursesLecturers . " ON " . $tableLecturers . ".id = " . $tableCoursesLecturers . ".lecturer_id INNER JOIN";
+				$query2 .= " " . $tableCourses . " ON " . $tableCoursesLecturers . ".course_id = " . $tableCourses . ".id";
+				
 				$var2 = mysql_query($query2);
 				
 				$dozenten = array();

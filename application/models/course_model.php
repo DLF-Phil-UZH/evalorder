@@ -21,9 +21,9 @@ class Course_model extends CI_Model{
 	private $lastExport;
 	
 	// Database tables
-	private $tableCourses = 'evalorder_courses';
-	private $tableLecturers = 'evalorder_lecturers';
-	private $tableParticipants = 'evalorder_participants';
+	private $tableCourses;
+	private $tableLecturers;
+	private $tableParticipants;
 	
 	// Folder for uploaded XLS files
 	private $fileDirPath;
@@ -35,6 +35,14 @@ class Course_model extends CI_Model{
 		$ci = &get_instance();
         $this->fileDirPath = $ci->config->item('xls_folder');
 		$this->load->database();
+		$this->setTableNames();
+	}
+	
+	// Sets table names out of config, cannot be done directly on declaration of variables since config is not loaded yet at this point of execution
+	private function setTableNames(){
+		$this->tableCourses = $this->config->item('table_courses');
+		$this->tableLecturers = $this->config->item('table_lecturers');
+		$this->tableParticipants = $this->config->item('table_participants');
 	}
 	
 	// Pseudo constructor to avoid warnings (see http://stackoverflow.com/questions/22688203/codeigniter-php-constructor-missing-argument-even-if-it-is-present)
