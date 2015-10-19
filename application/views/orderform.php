@@ -11,7 +11,7 @@
 			<h3>Bestellungen f&uuml;r das laufende Semester</h3>
 						
 			<p>Bestellungen k&ouml;nnen bis am 9. November 2015 &uuml;ber dieses Formular aufgegeben werden.</p>
-			<p>Sie geben pro Veranstaltung eine Bestellung auf.</p>
+			<p>Sie geben pro Veranstaltung eine Bestellung auf. Im 3. Bestellschritt k&ouml;nnen Sie die Frageb&ouml;gen vorschauen.</p>
 
 			<?php
 			// Display errors from text/option inputs
