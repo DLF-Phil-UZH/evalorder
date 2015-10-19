@@ -14,7 +14,6 @@
 | path to your installation.
 |
 */
-// $config['base_url']	= 'https://www.uzh.ch/phil/static/dev/evalorder/';
 $config['base_url']	= '';
 
 /*
