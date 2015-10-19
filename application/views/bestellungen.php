@@ -71,7 +71,12 @@ $num_rows = mysql_num_rows($var);
 				echo "<td>$comma_separated</td>";
 				
 				echo "<td>$result[name]</td><td>$result[type]</td>";
-				if($result['participantFile1']){
+				
+				// Participant list 1
+				if($result["surveyType"] === "papierumfrage"){
+					echo "<td>Keine Teilnehmerliste erforderlich (Papierumfrage).</td>";
+				}
+				else if($result['participantFile1']){
 					echo "<td>$result[participantFile1]</td>";
 				}
 				else{
@@ -85,7 +90,11 @@ $num_rows = mysql_num_rows($var);
 					echo "</td>";
 				}
 				
-				if($result['participantFile2']){
+				// Participant list 2
+				if($result["surveyType"] === "papierumfrage"){
+					echo "<td>Keine Teilnehmerliste erforderlich (Papierumfrage).</td>";
+				}
+				else if($result['participantFile2']){
 					echo "<td>$result[participantFile2]</td></tr>";
 				}
 				else{
