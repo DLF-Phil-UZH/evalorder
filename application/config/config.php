@@ -367,7 +367,7 @@ $config['proxy_ips'] = '';
 | folder is required
 |
 */
-$config['xls_folder'] = '/usr/local/ftp/phil/evalorder/files/';
+$config['xls_folder'] = '';
 
 
 /*
