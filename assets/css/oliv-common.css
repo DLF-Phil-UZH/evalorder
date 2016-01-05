@@ -262,7 +262,8 @@ div.buttonline{
 /* button#addDozent,
 button#removeDozent, */
 button,
-a.buttonlike/* ,
+a.buttonlike,
+div#bestellungen input[type="submit"]/* ,
 input[type="file"] */{
 	background: #2184be;
 	color: #fff;
@@ -379,6 +380,10 @@ div#bestellungen td, th{
 
 div#bestellungen .export{
 	text-align: center;
+}
+
+div#bestellungen input[type="submit"]{
+	margin-top: 15px;
 }
 
 /* Zebra crossing for every second row */

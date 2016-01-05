@@ -6,7 +6,7 @@ class Admin extends CI_Controller {
 	{
 		parent::__construct();
 
-		$this->load->helper('url');
+		$this->load->helper(array('form', 'url'));
 		$this->load->library('shibboleth_authentication_service', NULL, 'shib_auth');
 		$user = $this->shib_auth->verify_user();
 		if ($user == false) {
@@ -26,6 +26,13 @@ class Admin extends CI_Controller {
 	public function bestellungen(){
 		if($this->adminaccess === true){
 			try{
+				
+				// echo "POST<br/><br/>";
+				// print_r($this->input->post());
+				// echo "<br/><br/>POST ENDE";
+				
+				// TODO: If courses[] are set, generate XML files and send package to browser
+				
 				// Javascript files
 				$jQuery = array('type' => 'text/javascript',
 								'src' => 'https://code.jquery.com/jquery.min.js');
@@ -54,7 +61,7 @@ class Admin extends CI_Controller {
 		}
 	}
 	
-		public function standardwerte(){
+	public function standardwerte(){
 		if($this->adminaccess === true){
 			try{
 				$this->load->view('header', array('title' => 'Administration',
