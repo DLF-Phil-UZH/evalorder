@@ -33,6 +33,31 @@ class Admin extends CI_Controller {
 				
 				// TODO: If courses[] are set, generate XML files and send package to browser
 				
+				// Courses have been selected to generate XML files and download package
+				if($this->input->post('courses')){
+					
+					// echo "POST<br/><br/>";
+					// print_r($this->input->post('courses'));
+					// echo "<br/><br/>POST ENDE";
+					
+					// $courses = $this->input->post('courses');
+					// $this->load->model('Course_mapper');
+					// //$this->Course_mapper->storeOrder($course);
+					// foreach($courses as $courseId){
+						// echo "<br/>COURSE ID -" . $courseId . "-:<br/>";
+						// echo "<pre>";
+						// print_r($this->Course_mapper->getCourseById($courseId));
+						// echo "</pre>";
+						// echo "<br/><br/>";
+					// }
+					
+					// foreach $this->input->post('courses[]') as $courseNumber{
+						// if(is_int()){
+							
+						// }
+					// }
+				}
+				
 				// Javascript files
 				$jQuery = array('type' => 'text/javascript',
 								'src' => 'https://code.jquery.com/jquery.min.js');

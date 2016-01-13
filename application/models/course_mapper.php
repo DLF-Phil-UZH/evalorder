@@ -12,6 +12,7 @@ class Course_mapper extends CI_Model{
 		parent::__construct();
 		$this->load->database();
 		$this->load->model('Course_model');
+		$this->load->helper('excel');
 		$this->setTableNames();
 	}
 	
@@ -179,6 +180,7 @@ class Course_mapper extends CI_Model{
 		}
 	}
 	
+	// Returns all courses as an array of course models
 	public function getAllCourses(){
 		$allCourses = array();
 		$courseQuery = $this->db->get($this->tableCourses);
@@ -191,11 +193,16 @@ class Course_mapper extends CI_Model{
 				$tempCourse->setName($course->name);
 				$tempCourse->setType($course->type);
 				$tempCourse->setSurveyType($course->surveyType);
+				$tempCourse->setLanguage($course->language);
 				$tempCourse->setOrdererFirstname($course->ordererFirstname);
 				$tempCourse->setOrdererSurname($course->ordererSurname);
 				$tempCourse->setOrdererEmail($course->ordererEmail);
 				$tempCourse->setOrdererUniqueId($course->ordererUniqueId);
 				$tempCourse->setOrderTime($course->orderTime);
+				$tempCourse->setParticipantFile1($course->participantFile1);
+				$tempCourse->setParticipantFile2($course->participantFile2);
+				$tempCourse->setLastExport($course->lastExport);
+				$tempCourse->setSemester($course->semester);
 				
 				// Retrieve linked lecturers
 				$lecturerQuery = $this->db->get_where($this->tableLecturers, array('courseId' => $course->id));
@@ -216,13 +223,40 @@ class Course_mapper extends CI_Model{
 				
 				// Online survey
 				elseif(strcmp($course->surveyType, 'onlineumfrage') === 0){
-					// Retrieve linked participants
-					$participantQuery = $this->db->get_where($this->tableParticipants, array('courseId' => $course->id));
-					if($participantQuery->num_rows() > 0){
-						foreach($participantQuery->result() as $participant){
-							$tempCourse->addParticipant($participant->email);
+					
+					$participants1 = array();
+					$participants2 = array();
+					
+					// Add participant addresses from file 1, if available
+					$participantFile1 = $tempCourse->getPathParticipantFile1();
+					if($participantFile1 !== FALSE){
+						$fileCheck = checkParticipantFile($participantFile1);
+						if($fileCheck[0] === TRUE){
+							$participants1 = extractParticipantAddresses($participantFile1, $fileCheck[1]);
 						}
 					}
+					
+					// Add participant addresses from file 2, if available
+					$participantFile2 = $tempCourse->getPathParticipantFile2();
+					if($participantFile2 !== FALSE){
+						$fileCheck = checkParticipantFile($participantFile2);
+						if($fileCheck[0] === TRUE){
+							$participants2 = extractParticipantAddresses($participantFile2, $fileCheck[1]);
+						}
+					}
+					
+					if(count($participants1) + count($participants2) > 0){
+						$tempCourse->setParticipants(array_merge($participants1, $participants2));
+					}
+					
+					// // Retrieve linked participants
+					// $participantQuery = $this->db->get_where($this->tableParticipants, array('courseId' => $course->id));
+					// if($participantQuery->num_rows() > 0){
+						// foreach($participantQuery->result() as $participant){
+							// $tempCourse->addParticipant($participant->email);
+						// }
+					// }
+					
 					else{
 						log_message('error', 'course_mapper->getAllCourses(): Corrupted participant data (course ID ' . $course->id . ').');
 						show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
@@ -236,5 +270,101 @@ class Course_mapper extends CI_Model{
 			
 		}
 	}
+	
+	// Returns course with passed ID as course model
+	public function getCourseById($pCourseId){
+		
+		$courseQuery = $this->db->get_where($this->tableCourses, array('id' => $pCourseId));
+		
+		if($courseQuery->num_rows() === 1){
+			foreach($courseQuery->result() as $course){
+				$tempCourse = new Course_model();
+				
+				$tempCourse->setId($course->id);
+				$tempCourse->setName($course->name);
+				$tempCourse->setType($course->type);
+				$tempCourse->setSurveyType($course->surveyType);
+				$tempCourse->setLanguage($course->language);
+				$tempCourse->setOrdererFirstname($course->ordererFirstname);
+				$tempCourse->setOrdererSurname($course->ordererSurname);
+				$tempCourse->setOrdererEmail($course->ordererEmail);
+				$tempCourse->setOrdererUniqueId($course->ordererUniqueId);
+				$tempCourse->setOrderTime($course->orderTime);
+				$tempCourse->setParticipantFile1($course->participantFile1);
+				$tempCourse->setParticipantFile2($course->participantFile2);
+				$tempCourse->setLastExport($course->lastExport);
+				$tempCourse->setSemester($course->semester);
+				
+				// Retrieve linked lecturers
+				$lecturerQuery = $this->db->get_where($this->tableLecturers, array('courseId' => $course->id));
+				if($lecturerQuery->num_rows() > 0){
+					foreach($lecturerQuery->result_array() as $lecturer){
+						$tempCourse->addLecturer($lecturer);
+					}
+				}
+				else{
+					log_message('error', 'course_mapper->getCourseById(): Corrupted lecturer data (course ID ' . $course->id . ').');
+					show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
+				}
+				
+				// Paper survey
+				if(strcmp($course->surveyType, 'papierumfrage') === 0){
+					$tempCourse->setTurnout($course->turnout);
+				}
+				
+				// Online survey
+				elseif(strcmp($course->surveyType, 'onlineumfrage') === 0){
+					
+					$participants1 = array();
+					$participants2 = array();
+					
+					// Add participant addresses from file 1, if available
+					$participantFile1 = $tempCourse->getPathParticipantFile1();
+					if($participantFile1 !== FALSE){
+						$fileCheck = checkParticipantFile($participantFile1);
+						if($fileCheck[0] === TRUE){
+							$participants1 = extractParticipantAddresses($participantFile1, $fileCheck[1]);
+						}
+					}
+					
+					// Add participant addresses from file 2, if available
+					$participantFile2 = $tempCourse->getPathParticipantFile2();
+					if($participantFile2 !== FALSE){
+						$fileCheck = checkParticipantFile($participantFile2);
+						if($fileCheck[0] === TRUE){
+							$participants2 = extractParticipantAddresses($participantFile2, $fileCheck[1]);
+						}
+					}
+					
+					if(count($participants1) + count($participants2) > 0){
+						$tempCourse->setParticipants(array_merge($participants1, $participants2));
+					}
+					
+					// // Retrieve linked participants
+					// $participantQuery = $this->db->get_where($this->tableParticipants, array('courseId' => $course->id));
+					// if($participantQuery->num_rows() > 0){
+						// foreach($participantQuery->result() as $participant){
+							// $tempCourse->addParticipant($participant->email);
+						// }
+					// }
+					
+					else{
+						log_message('error', 'course_mapper->getCourseById(): Corrupted participant data (course ID ' . $course->id . ').');
+						show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
+					}
+				}
+				
+			}
+			
+			return $tempCourse;
+			
+		}
+		else{
+			log_message('error', 'getCourseById(): No course with id ' . $pCourseId . ' found in database.');
+			show_error('Kritischer Fehler in der Datenbank [Veranstaltung mit ID ' . $pCourseId . ' nicht gefunden]. Bitte versuchen Sie es nochmals.');
+		}
+	}
+	
+	// TODO: Function to generate XML file for passed course models
 	
 }
