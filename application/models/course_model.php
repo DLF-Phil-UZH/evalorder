@@ -245,4 +245,22 @@ class Course_model extends CI_Model{
 		return $lIsNew;
 	}
 	
+	// Assembles code for survey_form tag in XML import file
+	// Returns code as string or false in case of missing/corrupt data
+	public function getSurveyForm(){
+		// TODO: Return code for survey form based on language, number of lecturers and course type
+	}
+	
+	// Returns survey type as valid XML import string 
+	public function getSurveyTypeXMLValue(){
+		switch($this->surveyType){
+			case "onlineumfrage":
+				return "online";
+			case "papierumfrage":
+				return "hardcopy";
+			default:
+				return "";
+		}
+	}
+	
 }

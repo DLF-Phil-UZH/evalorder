@@ -6,7 +6,7 @@ class Admin extends CI_Controller {
 	{
 		parent::__construct();
 
-		$this->load->helper(array('form', 'url'));
+		$this->load->helper(array('form', 'extended_form', 'url'));
 		$this->load->library('shibboleth_authentication_service', NULL, 'shib_auth');
 		$user = $this->shib_auth->verify_user();
 		if ($user == false) {
@@ -40,16 +40,19 @@ class Admin extends CI_Controller {
 					// print_r($this->input->post('courses'));
 					// echo "<br/><br/>POST ENDE";
 					
-					// $courses = $this->input->post('courses');
-					// $this->load->model('Course_mapper');
-					// //$this->Course_mapper->storeOrder($course);
+					$courses = $this->input->post('courses');
+					$this->load->model('Course_mapper');
+					
 					// foreach($courses as $courseId){
 						// echo "<br/>COURSE ID -" . $courseId . "-:<br/>";
-						// echo "<pre>";
-						// print_r($this->Course_mapper->getCourseById($courseId));
-						// echo "</pre>";
+						// // echo "<pre>";
+						// echo "isDigit: " . isDigit($courseId);
+						// // print_r();
+						// // echo "</pre>";
 						// echo "<br/><br/>";
 					// }
+					
+					$this->Course_mapper->writeXMLImportFile($courses);
 					
 					// foreach $this->input->post('courses[]') as $courseNumber{
 						// if(is_int()){

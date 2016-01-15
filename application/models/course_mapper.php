@@ -8,11 +8,15 @@ class Course_mapper extends CI_Model{
 	private $tableParticipants;
 	private $tableMapping;
 	
+	// Lecturer/recipient collections to avoid duplicates when generating XML file
+	private $allLecturers;
+	private $allRecipients;
+	
 	public function __construct(){
 		parent::__construct();
 		$this->load->database();
 		$this->load->model('Course_model');
-		$this->load->helper('excel');
+		$this->load->helper(array('excel', 'extended_form'));
 		$this->setTableNames();
 	}
 	
@@ -365,6 +369,259 @@ class Course_mapper extends CI_Model{
 		}
 	}
 	
-	// TODO: Function to generate XML file for passed course models
+	// TODO: Function to generate XML file for passed course IDs
+	public function writeXMLImportFile($pCourseIds){
+		$courses = array();
+		
+		// Gather course objects for all course IDs into one array
+		foreach($pCourseIds as $courseId){
+			if(isDigit($courseId)){
+				log_message('debug', 'writeXMLImportFile(): course with ID ' . $courseId . ' retrieved from database');
+				array_push($courses, $this->getCourseById($courseId));
+			}
+			else{
+				log_message('error', 'writeXMLImportFile(): Invalid course ID: ' . $courseId);
+				show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [ung&uuml;ltige Kurs-ID]. Bitte versuchen Sie es nochmals.');
+			}
+		}
+		
+		$this->config->load('standardwerte_config');
+		// Initialize lecturer and recipient collections
+		$this->allLecturers = array();
+		$this->allRecipients = array();
+		
+		// Prepare XML content
+		$lXMLWriter = new xmlWriter();
+		$lXMLWriter->openMemory();
+		$lXMLWriter->setIndent(true);
+		$lXMLWriter->startDocument("1.0", "utf-8"); // First line
+		$lXMLWriter->startElement("EvaSys"); // Root element
+		
+		// <Lecture> elements
+		foreach($courses as $lCourse){
+			
+			$lXMLWriter->startElement("Lecture"); // Course
+			$lXMLWriter->writeAttribute("key", "Course" . $lCourse->getId()); // Course: attribute
+			$lXMLWriter->startElement("dozs"); // Lecturers
+			
+			foreach($lCourse->getLecturers() as $lLecturer){
+				
+				$lLecturerId = $this->checkForUniqueLecturer($lLecturer);
+				
+				$lXMLWriter->startElement("doz"); // Lecturer
+				$lXMLWriter->startElement("EvaSysRef");
+				$lXMLWriter->writeAttribute("type", "Person");
+				$lXMLWriter->writeAttribute("key", "User" . $lLecturerId); // Attribute ID
+				$lXMLWriter->endElement(); // EvaSysRef
+				$lXMLWriter->endElement(); // Lecturer
+				
+			}
+			$lXMLWriter->endElement(); // Lecturers
+			
+			$lXMLWriter->writeElement("name", $lCourse->getName()); // Name
+			$lXMLWriter->writeElement("orgroot", $this->config->item('orgroot')); // Organisation
+			$lXMLWriter->writeElement("short", str_replace(" ", "", $lCourse->getSemester()) . "_" . $lCourse->getId()); // Short: Semester + ID, example: "FS2016_40"
+			$lXMLWriter->writeElement("type", $lCourse->getType()); // Type
+			$lXMLWriter->writeElement("turnout", $lCourse->getTurnout()); // Turnout
+			$lXMLWriter->startElement("survey"); // Survey
+			$lXMLWriter->startElement("EvaSysRef");
+			$lXMLWriter->writeAttribute("type", "Survey");
+			// Only one survey per course is possible
+			$lXMLWriter->writeAttribute("key", "Survey" . $lCourse->getId()); // Attribute ID
+			$lXMLWriter->endElement(); // EvaSysRef
+			$lXMLWriter->endElement(); // Survey
+			$lXMLWriter->endElement(); // Course
+		
+		}
+		
+		// <Person> elements
+		foreach($this->allLecturers as $lLecturer){
+			
+			$lXMLWriter->startElement("Person"); // Person
+			$lXMLWriter->writeAttribute("key", "User" . $lLecturer["id"]); // Attribute ID
+			$lXMLWriter->writeElement("firstname", $lLecturer["firstname"]); // Firstname
+			$lXMLWriter->writeElement("lastname", $lLecturer["surname"]); // Lastname
+			$lXMLWriter->writeElement("title", $lLecturer["title"]); // Title
+			$lXMLWriter->writeElement("email", $lLecturer["email"]); // E-mail address
+			$lXMLWriter->writeElement("gender", $lLecturer["gender"]); // Gender
+			$lXMLWriter->endElement(); // Person
+			
+		}
+		
+		// <Survey> elements
+		foreach($courses as $lCourse){
+			
+			$lXMLWriter->startElement("Survey"); // Survey
+			$lXMLWriter->writeAttribute("key", "Survey" . $lCourse->getId()); // Attribute ID
+			// TODO: Finish getSurveyForm() in course_model
+			// $lXMLWriter->writeElement("survey_form", $lCourse->getSurveyForm()); // Survey form
+			$lXMLWriter->writeElement("survey_period", $lCourse->getSurveyPeriod()); // Survey period
+			$lXMLWriter->writeElement("survey_type", $lCourse->getSurveyTypeXMLValue()); // Survey type
+			$lXMLWriter->writeElement("survey_verify", $this->config->item('survey_verify')); // Verification of survey
+			
+			// Write <survey_tasks> elements only if survey type is online (paper based surveys don't need <task> elements)
+			if(strcmp($lCourse->getSurveyType(), 'onlineumfrage') === 0){
+				
+				$lXMLWriter->startElement("survey_tasks"); // tasks
+				// Default: 3 tasks for every online survey (dispatch, remind, close)
+				$tasknumber = (intval($lCourse-getId())) * 3 - 2;
+				while($tasknumber <= (intval($lCourse-getId()) * 3)){
+					$lXMLWriter->startElement("survey_task"); // task
+					$lXMLWriter->startElement("EvaSysRef");
+					$lXMLWriter->writeAttribute("type", "Task");
+					$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute task number
+					$lXMLWriter->endElement(); // EvaSysRef
+					$lXMLWriter->endElement(); // task
+					$tasknumber += 1;
+				}
+				$lXMLWriter->endElement(); // tasks
+				
+			}
+			$lXMLWriter->endElement(); // survey
+			
+		}
+		
+		// <Task> elements
+		foreach($courses as $lCourse){
+			// Write <Task> elements only if survey type is online (paper based surveys don't need <task> elements)
+			if(strcmp($lCourse->getSurveyType(), 'onlineumfrage') === 0){
+				
+				// Default: 3 tasks for every online survey (dispatch, remind, close)
+				$tasknumber = (intval($lCourse-getId())) * 3 - 2;
+				$lXMLWriter->startElement("Task"); // Task
+				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
+				
+				// dispatch_pswd
+				if($tasknumber % 3 == 1){
+					$lXMLWriter->writeElement("type", $this->config->item('tasktype_1')); // Type
+					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_1')); // Datetime
+					$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+					$lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+					$lXMLWriter->writeElement("text", $this->config->item('taskmailtext_1')); // Mail text
+					$lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+					$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
+					
+					// Recipients
+					$lXMLWriter->startElement("recipients"); // Recipients
+					foreach($lCourse->getParticipants() as $lRecipient){
+						
+						$lRecipientId = $this->checkForUniqueLecturer($lRecipient);
+						
+						$lXMLWriter->startElement("recipient"); // Recipient
+						$lXMLWriter->startElement("EvaSysRef");
+						$lXMLWriter->writeAttribute("type", "Recipient");
+						$lXMLWriter->writeAttribute("key", "Recipient" . $lRecipientId); // Attribute ID
+						$lXMLWriter->endElement(); // EvaSysRef
+						$lXMLWriter->endElement(); // Recipient
+					}
+					$lXMLWriter->endElement(); // Recipients
+				}
+				// remind_pswd
+				else if($tasknumber % 3 == 2){
+					$lXMLWriter->writeElement("type", $this->config->item('tasktype_2')); // Type
+					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_2')); // Datetime
+					$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+					$lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+					$lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
+					$lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+					$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
+				}
+				// close_survey
+				else if($tasknumber % 3 == 0){
+					$lXMLWriter->writeElement("type", $this->config->item('tasktype_3')); // Type
+					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_3')); // Datetime
+					// $lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+					// $lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+					// $lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
+					// $lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+					$lXMLWriter->writeElement("dispatch_report", $this->config->item('dispatch_report')); // Dispatch report
+				}
+				
+				$lXMLWriter->endElement(); // Task
+				
+			}
+		}
+		
+		// <Recipient> elements
+		foreach($this->allRecipients as $lRecipientId => $lRecipientEmail){
+			
+			$lXMLWriter->startElement("Recipient"); // Recipient
+			$lXMLWriter->writeAttribute("key", "Recipient" . $lRecipientId); // Attribute ID
+			$lXMLWriter->writeElement("email", $lRecipientEmail); // E-mail address
+			$lXMLWriter->endElement(); // Recipient
+			
+		}
+		
+		$lXMLWriter->endElement(); // EvaSys (root element)
+		$lXMLWriter->endDocument();
+		
+		// Create file and write content
+		$lFileContent = mb_convert_encoding($lXMLWriter->outputMemory(), "UTF-8"); // Convert content to UTF-8
+		// Create filename with timestamp and ending
+		$lFilename = "EvaSys-Import_" . date("Y-m-d_H-i-s") . ".xml";
+		
+		// Add suffix if file with this name already exists in order to not overwrite the existing one
+		$filenameSuffix = 0;
+		$parts = pathinfo($lFilename);
+		// TODO: Define download folder in configuration
+		while(file_exists($uploadDirectory . $name)){
+			$filenameSuffix++;
+			$lFilename = $parts["filename"] . "-" . $filenameSuffix . "." . $parts["extension"];
+		}
+		
+		if(($lXMLOutput = fopen($lFilename, "wb")) !== false){
+			fwrite($lXMLOutput, pack("CCC", 0xef, 0xbb, 0xbf)); // Write BOM
+			fwrite($lXMLOutput, $lFileContent);
+			// Close file
+			fclose($lXMLOutput);
+			// return $lFilename;
+			// TODO: Offer file download to user
+		}
+		else{
+			// TODO: Error message in log and view
+			return false;
+		}
+		
+	}
+	
+	// Checks if there is already an identical lecturer with the same values as the passed one.
+	// Returns ID of existing lecturer or adds passed lecturer to collection and returns ID of this one.
+	private function checkForUniqueLecturer($pLecturer){
+	
+		foreach($this->allLecturers as $lLecturer){
+			if(strcasecmp($lLecturer["firstname"], $pLecturer["firstname"]) == 0){ // Firstname matches
+				if(strcasecmp($lLecturer["surname"], $pLecturer["surname"]) == 0){ // Lastname matches
+					if(strcasecmp($lLecturer["title"], $pLecturer["title"]) == 0){ // Title matches
+						if(strcasecmp($lLecturer["email"], $pLecturer["email"]) == 0){ // E-mail address matches
+							if(strcasecmp($lLecturer["gender"], $pLecturer["gender"]) == 0){ // Gender matches
+								// Lecturer already exists, return ID of this one
+								return $lLecturer["id"];
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Lecturer does not exist, add to lecturer collection and return his ID
+		array_push($this->allLecturers, $pLecturer);
+		return $pLecturer["id"];
+	}
+	
+	// Checks if there is already an identical recipient with the same e-mail address as the passed one.
+	// Returns ID of existing recipient or adds passed recipient to collection and returns ID of this one.
+	private function checkForUniqueRecipient($pRecipientEmail){
+	
+		$recipientId = array_search($pRecipientEmail, $this->allRecipients);
+		
+		// If recipient mail address is not in collection yet, add it
+		if($recipientId === FALSE){
+			array_push($this->allRecipients, $pRecipientEmail);
+			$recipientId = array_search($pRecipientEmail, $this->allRecipients);
+		}
+		
+		return $recipientId;
+		
+	}
 	
 }
