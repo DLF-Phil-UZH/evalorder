@@ -390,6 +390,8 @@ class Course_mapper extends CI_Model{
 		$this->allLecturers = array();
 		$this->allRecipients = array();
 		
+		log_message('debug', 'writeXMLImportFile_1');
+		
 		// Prepare XML content
 		$lXMLWriter = new xmlWriter();
 		$lXMLWriter->openMemory();
@@ -397,15 +399,19 @@ class Course_mapper extends CI_Model{
 		$lXMLWriter->startDocument("1.0", "utf-8"); // First line
 		$lXMLWriter->startElement("EvaSys"); // Root element
 		
+		log_message('debug', 'writeXMLImportFile_2');
+		
 		// <Lecture> elements
 		foreach($courses as $lCourse){
+			
+			log_message('debug', 'writeXMLImportFile_3');
 			
 			$lXMLWriter->startElement("Lecture"); // Course
 			$lXMLWriter->writeAttribute("key", "Course" . $lCourse->getId()); // Course: attribute
 			$lXMLWriter->startElement("dozs"); // Lecturers
 			
 			foreach($lCourse->getLecturers() as $lLecturer){
-				
+				log_message('debug', 'writeXMLImportFile_4');
 				$lLecturerId = $this->checkForUniqueLecturer($lLecturer);
 				
 				$lXMLWriter->startElement("doz"); // Lecturer
@@ -416,6 +422,7 @@ class Course_mapper extends CI_Model{
 				$lXMLWriter->endElement(); // Lecturer
 				
 			}
+			log_message('debug', 'writeXMLImportFile_5');
 			$lXMLWriter->endElement(); // Lecturers
 			
 			$lXMLWriter->writeElement("name", $lCourse->getName()); // Name
@@ -431,12 +438,12 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->endElement(); // EvaSysRef
 			$lXMLWriter->endElement(); // Survey
 			$lXMLWriter->endElement(); // Course
-		
+			log_message('debug', 'writeXMLImportFile_6');
 		}
-		
+		log_message('debug', 'writeXMLImportFile_7');
 		// <Person> elements
 		foreach($this->allLecturers as $lLecturer){
-			
+			log_message('debug', 'writeXMLImportFile_8');
 			$lXMLWriter->startElement("Person"); // Person
 			$lXMLWriter->writeAttribute("key", "User" . $lLecturer["id"]); // Attribute ID
 			$lXMLWriter->writeElement("firstname", $lLecturer["firstname"]); // Firstname
@@ -447,25 +454,31 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->endElement(); // Person
 			
 		}
-		
+		log_message('debug', 'writeXMLImportFile_9');
 		// <Survey> elements
 		foreach($courses as $lCourse){
-			
+			log_message('debug', 'writeXMLImportFile_10');
 			$lXMLWriter->startElement("Survey"); // Survey
+			log_message('debug', 'writeXMLImportFile_10.1');
 			$lXMLWriter->writeAttribute("key", "Survey" . $lCourse->getId()); // Attribute ID
 			// TODO: Finish getSurveyForm() in course_model
 			// $lXMLWriter->writeElement("survey_form", $lCourse->getSurveyForm()); // Survey form
-			$lXMLWriter->writeElement("survey_period", $lCourse->getSurveyPeriod()); // Survey period
+			log_message('debug', 'writeXMLImportFile_10.2');
+			$lXMLWriter->writeElement("survey_period", $lCourse->getSemester()); // Survey period
+			log_message('debug', 'writeXMLImportFile_10.3');
 			$lXMLWriter->writeElement("survey_type", $lCourse->getSurveyTypeXMLValue()); // Survey type
+			log_message('debug', 'writeXMLImportFile_10.4');
 			$lXMLWriter->writeElement("survey_verify", $this->config->item('survey_verify')); // Verification of survey
-			
+			log_message('debug', 'writeXMLImportFile_11');
 			// Write <survey_tasks> elements only if survey type is online (paper based surveys don't need <task> elements)
 			if(strcmp($lCourse->getSurveyType(), 'onlineumfrage') === 0){
-				
+				log_message('debug', 'writeXMLImportFile_12');
 				$lXMLWriter->startElement("survey_tasks"); // tasks
 				// Default: 3 tasks for every online survey (dispatch, remind, close)
-				$tasknumber = (intval($lCourse-getId())) * 3 - 2;
-				while($tasknumber <= (intval($lCourse-getId()) * 3)){
+				$tasknumber = (intval($lCourse->getId())) * 3 - 2;
+				log_message('debug', 'writeXMLImportFile_12.1; tasknumber: ' . $tasknumber);
+				while($tasknumber <= (intval($lCourse->getId()) * 3)){
+					log_message('debug', 'writeXMLImportFile_13');	
 					$lXMLWriter->startElement("survey_task"); // task
 					$lXMLWriter->startElement("EvaSysRef");
 					$lXMLWriter->writeAttribute("type", "Task");
@@ -480,19 +493,20 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->endElement(); // survey
 			
 		}
-		
+		log_message('debug', 'writeXMLImportFile_14');
 		// <Task> elements
 		foreach($courses as $lCourse){
 			// Write <Task> elements only if survey type is online (paper based surveys don't need <task> elements)
 			if(strcmp($lCourse->getSurveyType(), 'onlineumfrage') === 0){
-				
+				log_message('debug', 'writeXMLImportFile_15');
 				// Default: 3 tasks for every online survey (dispatch, remind, close)
-				$tasknumber = (intval($lCourse-getId())) * 3 - 2;
+				$tasknumber = (intval($lCourse->getId())) * 3 - 2;
 				$lXMLWriter->startElement("Task"); // Task
 				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
 				
 				// dispatch_pswd
 				if($tasknumber % 3 == 1){
+					log_message('debug', 'writeXMLImportFile_16');
 					$lXMLWriter->writeElement("type", $this->config->item('tasktype_1')); // Type
 					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_1')); // Datetime
 					$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
@@ -504,8 +518,8 @@ class Course_mapper extends CI_Model{
 					// Recipients
 					$lXMLWriter->startElement("recipients"); // Recipients
 					foreach($lCourse->getParticipants() as $lRecipient){
-						
-						$lRecipientId = $this->checkForUniqueLecturer($lRecipient);
+						log_message('debug', 'writeXMLImportFile_17');
+						$lRecipientId = $this->checkForUniqueRecipient($lRecipient);
 						
 						$lXMLWriter->startElement("recipient"); // Recipient
 						$lXMLWriter->startElement("EvaSysRef");
@@ -518,6 +532,7 @@ class Course_mapper extends CI_Model{
 				}
 				// remind_pswd
 				else if($tasknumber % 3 == 2){
+					log_message('debug', 'writeXMLImportFile_18');
 					$lXMLWriter->writeElement("type", $this->config->item('tasktype_2')); // Type
 					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_2')); // Datetime
 					$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
@@ -528,6 +543,7 @@ class Course_mapper extends CI_Model{
 				}
 				// close_survey
 				else if($tasknumber % 3 == 0){
+					log_message('debug', 'writeXMLImportFile_19');
 					$lXMLWriter->writeElement("type", $this->config->item('tasktype_3')); // Type
 					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_3')); // Datetime
 					// $lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
@@ -541,7 +557,7 @@ class Course_mapper extends CI_Model{
 				
 			}
 		}
-		
+		log_message('debug', 'writeXMLImportFile_20');
 		// <Recipient> elements
 		foreach($this->allRecipients as $lRecipientId => $lRecipientEmail){
 			
@@ -549,7 +565,7 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->writeAttribute("key", "Recipient" . $lRecipientId); // Attribute ID
 			$lXMLWriter->writeElement("email", $lRecipientEmail); // E-mail address
 			$lXMLWriter->endElement(); // Recipient
-			
+			log_message('debug', 'writeXMLImportFile_21');
 		}
 		
 		$lXMLWriter->endElement(); // EvaSys (root element)
@@ -559,26 +575,26 @@ class Course_mapper extends CI_Model{
 		$lFileContent = mb_convert_encoding($lXMLWriter->outputMemory(), "UTF-8"); // Convert content to UTF-8
 		// Create filename with timestamp and ending
 		$lFilename = "EvaSys-Import_" . date("Y-m-d_H-i-s") . ".xml";
-		
+		log_message('debug', 'writeXMLImportFile_22');
 		// Add suffix if file with this name already exists in order to not overwrite the existing one
 		$filenameSuffix = 0;
 		$parts = pathinfo($lFilename);
-		// TODO: Define download folder in configuration
-		while(file_exists($uploadDirectory . $name)){
+		$downloadDirectory = $this->config->item('xml_folder');
+		while(file_exists($downloadDirectory . $lFilename)){
 			$filenameSuffix++;
 			$lFilename = $parts["filename"] . "-" . $filenameSuffix . "." . $parts["extension"];
 		}
-		
-		if(($lXMLOutput = fopen($lFilename, "wb")) !== false){
+		log_message('debug', 'writeXMLImportFile_23');
+		if(($lXMLOutput = fopen($downloadDirectory . $lFilename, "wb")) !== false){
 			fwrite($lXMLOutput, pack("CCC", 0xef, 0xbb, 0xbf)); // Write BOM
 			fwrite($lXMLOutput, $lFileContent);
 			// Close file
 			fclose($lXMLOutput);
-			// return $lFilename;
-			// TODO: Offer file download to user
+			// Return filename for download
+			return $lFilename;
 		}
 		else{
-			// TODO: Error message in log and view
+			log_message('error', 'Could not write XML file to ' . $downloadDirectory . $lFilename . ' Course IDs: ' . implode(", ", $pCourseIds));
 			return false;
 		}
 		

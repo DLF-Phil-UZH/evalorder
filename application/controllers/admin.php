@@ -20,45 +20,52 @@ class Admin extends CI_Controller {
 	}
 
 	public function index(){
-	    redirect(site_url('/admin/bestellungen'));
+		redirect(site_url('/admin/bestellungen'));
 	}
 
 	public function bestellungen(){
 		if($this->adminaccess === true){
 			try{
 				
-				// echo "POST<br/><br/>";
-				// print_r($this->input->post());
-				// echo "<br/><br/>POST ENDE";
-				
-				// TODO: If courses[] are set, generate XML files and send package to browser
+				$xmlFilename = '';
+				$xmlError = '';
 				
 				// Courses have been selected to generate XML files and download package
 				if($this->input->post('courses')){
 					
-					// echo "POST<br/><br/>";
-					// print_r($this->input->post('courses'));
-					// echo "<br/><br/>POST ENDE";
-					
 					$courses = $this->input->post('courses');
 					$this->load->model('Course_mapper');
 					
-					// foreach($courses as $courseId){
-						// echo "<br/>COURSE ID -" . $courseId . "-:<br/>";
-						// // echo "<pre>";
-						// echo "isDigit: " . isDigit($courseId);
-						// // print_r();
-						// // echo "</pre>";
-						// echo "<br/><br/>";
-					// }
+					$xmlFilename = $this->Course_mapper->writeXMLImportFile($courses);
 					
-					$this->Course_mapper->writeXMLImportFile($courses);
+					// Error in XML generation
+					if($xmlFilename === FALSE){
+						$xmlFilename = '';
+						$xmlError = 'Fehler beim Generieren der XML-Datei. Bitte versuchen Sie es nochmals.';
+					}
 					
-					// foreach $this->input->post('courses[]') as $courseNumber{
-						// if(is_int()){
-							
-						// }
-					// }
+					// Javascript files
+					$jQuery = array('type' => 'text/javascript',
+									'src' => 'https://code.jquery.com/jquery.min.js');
+					$orderformLibrary = array('type' => 'text/javascript',
+											  'src' => base_url('/assets/js/orderform_library.js'));
+					$tablesorter = array('type' => 'text/javascript',
+										 'src' => base_url('/assets/js/jquery.tablesorter.js'));
+					$bestellungen = array('type' => 'text/javascript',
+										  'src' => base_url('/assets/js/bestellungen.js'));
+					
+					// Load download view
+					$this->load->view('header', array('title' => 'Administration',
+												  'page' => 'bestellungen',
+												  'width' => 'normal',
+												  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
+												  'access' => ($this->shib_auth->verify_user() !== false),
+												  'admin' => $this->adminaccess,
+												  'scripts' => array($jQuery, $orderformLibrary, $tablesorter, $bestellungen)));
+					$this->load->view('download', array('xmlError' => $xmlError,
+														'xmlFilename' => $xmlFilename));
+					$this->load->view('footer');
+					
 				}
 				
 				// Javascript files
@@ -87,6 +94,18 @@ class Admin extends CI_Controller {
 		else{
 			$this->_access_denied();
 		}
+	}
+	
+	public function xmldownload($pFilename){
+
+		log_message('debug', 'download_1');
+		$this->load->helper('download');
+		$fullPath = $this->config->item('xml_folder') . $pFilename;
+		$data = file_get_contents($fullPath); // Read the file's contents
+		log_message('debug', 'download_2');
+		force_download($pFilename, $data);
+		log_message('debug', 'download_3');
+		
 	}
 	
 	public function standardwerte(){

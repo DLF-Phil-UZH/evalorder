@@ -27,8 +27,12 @@ $num_rows = mysql_num_rows($var);
 ?>
 
 	<div class="oliv_content">
+		
+		<h2>Eva &ndash; Bestellungs&uuml;bersicht</h2>
+		
 		<p>Gefundene Bestellungen: <span class="bold"><?php echo $num_rows; ?></span></p>
 		<p>Bestellungen f&uuml;r: <span class="bold"><?php echo $survey_period; ?></span></p>
+
 		<div id="bestellungen">
 			<?php echo form_open('admin/bestellungen'); ?>
 				<?php
