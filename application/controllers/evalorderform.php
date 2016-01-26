@@ -374,7 +374,7 @@ class Evalorderform extends CI_Controller {
 	// Handles file uploads requested by AJAX
 	public function uploadfile($pCourseId = NULL, $pFileNumber = NULL){
 		
-		
+		// TODO: Update turnout value
 		log_message('debug', 'uploadfile_1: type(courseid) = ' . gettype($pCourseId) . ', type(filenumber) = ' . gettype($pFileNumber));
 		$storeResult = array(
 			'status' => '',
@@ -517,7 +517,16 @@ class Evalorderform extends CI_Controller {
 				'status' => 'error',
 				'feedback' => 'Fehler beim Hochladen der Datei.'
 			);
-			// exit;
+		}
+		
+		// Only allow xls(x) files
+		$originalExtension = pathinfo($file["name"], PATHINFO_EXTENSION);
+		if(!($originalExtension == "xls" || $originalExtension == "xlsx")){
+			log_message('debug', '_storeParticipantList: Invalid file extension: ' . $originalExtension);
+			return array(
+				'status' => 'error',
+				'feedback' => 'Fehler beim Hochladen der Datei: Nur xls(x)-Dateien sind erlaubt.'
+			);
 		}
 
 		// ensure a safe filename
@@ -542,7 +551,6 @@ class Evalorderform extends CI_Controller {
 				'status' => 'error',
 				'feedback' => 'Datei konnte nicht gespeichert werden.'
 			);
-			// exit;
 		}
 		log_message('debug', '_storeParticipantList7');
 		// set proper permissions on the new file

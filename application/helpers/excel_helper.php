@@ -11,6 +11,14 @@ if(!function_exists('checkParticipantFile')){
 		
 		log_message('debug', 'checkParticipantFile_2');
 		
+		// Stop if file is not xls(x)
+		$originalExtension = pathinfo($pFullPath, PATHINFO_EXTENSION);
+		if(!($originalExtension == "xls" || $originalExtension == "xlsx")){
+			log_message('debug', 'checkParticipantFile: pFullPath: ' . $pFullPath);
+			log_message('debug', 'checkParticipantFile: Invalid file extension: ' . $originalExtension);
+			return array(FALSE, 'Fehler beim Pr&uuml;fen der Datei: Nur xls(x)-Dateien sind erlaubt.');
+		}
+		
 		$readerObject = PHPExcel_IOFactory::createReaderForFile($pFullPath);
 		$readerObject->setReadDataOnly(true);
 		$excelObject = $readerObject->load($pFullPath);

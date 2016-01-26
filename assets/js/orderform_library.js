@@ -188,11 +188,17 @@ function setNumberOfLists(number){
 			document.getElementById('fileselect1').disabled = true;
 			document.getElementById('uploadbutton1').disabled = true;
 			document.getElementById('filecheck1').disabled = true;
+			document.getElementById('filecheck1').setAttribute("value", "");
+			document.getElementById('filefeedback1').style = "";
+			document.getElementById('filefeedback1').innerHTML = "";
 			
 			$("#fileupload_block2").hide();
 			document.getElementById('fileselect2').disabled = true;
 			document.getElementById('uploadbutton2').disabled = true;
 			document.getElementById('filecheck2').disabled = true;
+			document.getElementById('filecheck2').setAttribute("value", "");
+			document.getElementById('filefeedback2').style = "";
+			document.getElementById('filefeedback2').innerHTML = "";
 		}
 		else if(number == 1){
 			$("#fileupload_explanation").show();
@@ -206,6 +212,9 @@ function setNumberOfLists(number){
 			document.getElementById('fileselect2').disabled = true;
 			document.getElementById('uploadbutton2').disabled = true;
 			document.getElementById('filecheck2').disabled = true;
+			document.getElementById('filecheck2').setAttribute("value", "");
+			document.getElementById('filefeedback2').style = "";
+			document.getElementById('filefeedback2').innerHTML = "";
 		}
 		else if(number == 2){
 			$("#fileupload_explanation").show();
@@ -299,7 +308,7 @@ function displayFormPreview(){
 	}
 	
 	// Number of lecturers
-	var currentNumberLecturers = parseInt($('#anzahlDozenten').val());	
+	var currentNumberLecturers = parseInt($('#anzahlDozenten').val());
 	if(currentNumberLecturers === 1){
 		lecturers = "e";
 	}
@@ -412,8 +421,8 @@ function uploadList(number, course) {
 					else if(responseArray.status === "success"){
 						feedback.style = "color: green;";
 						feedback.innerHTML = "Datei <b>" + responseArray.feedback + "</b> erfolgreich hochgeladen.";
+						filecheck.setAttribute("value", responseArray.feedback);
 					}
-					filecheck.value = responseArray.feedback;
 				}
 				else{
 					feedback.style = "color: red;";

@@ -604,6 +604,7 @@ class Course_mapper extends CI_Model{
 			fwrite($lXMLOutput, $lFileContent);
 			// Close file
 			fclose($lXMLOutput);
+			// TODO: Update lastExport timestamp of concerned courses
 			// Return filename for download
 			return $lFilename;
 		}
