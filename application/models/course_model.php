@@ -36,6 +36,7 @@ class Course_model extends CI_Model{
         $this->fileDirPath = $ci->config->item('xls_folder');
 		$this->load->database();
 		$this->setTableNames();
+		$this->config->load('standardwerte_config');
 	}
 	
 	// Sets table names out of config, cannot be done directly on declaration of variables since config is not loaded yet at this point of execution
@@ -248,7 +249,58 @@ class Course_model extends CI_Model{
 	// Assembles code for survey_form tag in XML import file
 	// Returns code as string or false in case of missing/corrupt data
 	public function getSurveyForm(){
-		// TODO: Return code for survey form based on language, number of lecturers and course type
+		
+		if(!(strcmp($this->type, "vorlesung") == 0 ||
+		     strcmp($this->type, "uebung") == 0 ||
+		     strcmp($this->type, "seminar") == 0 ||
+		     strcmp($this->type, "praktikum") == 0)){
+			log_message('error', 'getSurveyForm(): Invalid course type: ' . $this->type);
+			return FALSE;
+		}
+		
+		$lecturersNumber = '';
+		if(count($this->lecturers) === 1){
+			$lecturersNumber = 'one_lecturer';
+		}
+		else if(count($this->lecturers) > 1){
+			$lecturersNumber = 'multiple_lecturers';
+		}
+		else{
+			log_message('error', 'getSurveyForm(): Invalid number of lecturers: ' . count($this->lecturers));
+			return FALSE;
+		}
+		
+		$language = '';
+		switch($this->surveyType){
+			case "onlineumfrage":
+				log_message('debug', 'getSurveyForm(): 1');
+				$language = 'none';
+				break;
+			case "papierumfrage":
+				log_message('debug', 'getSurveyForm(): 2');
+				if(!(strcmp($this->language, "englisch") == 0 ||
+					 strcmp($this->language, "deutsch") == 0 /* ||
+					 strcmp($this->language, "italienisch") == 0) */)){
+					 log_message('debug', 'getSurveyForm(): 3');
+					log_message('error', 'getSurveyForm(): Invalid language: ' . $this->language);
+					return FALSE;
+				}
+				else{
+					log_message('debug', 'getSurveyForm(): 4');
+					$language = $this->language;
+				}
+				break;
+			default:
+				log_message('debug', 'getSurveyForm(): 5');
+				return FALSE;
+		}
+		
+		$surveyForms = $this->config->item('survey_form');
+		
+		log_message('debug', 'getSurveyForm(): Return config item surveyForms[' . $this->type . '][' . $lecturersNumber . '][' . $language . ']: ' . $surveyForms[$this->type][$lecturersNumber][$language]);
+		
+		// return $this->config->item('survey_form', $this->type, $lecturersNumber, $language);
+		return $surveyForms[$this->type][$lecturersNumber][$language];
 	}
 	
 	// Returns survey type as valid XML import string 

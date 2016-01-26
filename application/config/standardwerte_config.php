@@ -1,6 +1,46 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config['orgroot'] = 'PR GSW / Hochschuldidaktik';
+
+// Survey form codes for existing forms in use at Hochschuldidaktik
+// Course type and language keys map to equivalent database entry
+// Language key 'none' used for online surveys which don't need language specification
+
+// TODO: Add language distinction (currently same form regardless of language)
+// TODO: Set correct code for praktikum courses (currently seminar forms in use)
+$config['survey_form']['praktikum']['one_lecturer']['none'] = 'SFO_Se4';
+$config['survey_form']['praktikum']['one_lecturer']['deutsch'] = 'SFO_Se4';
+$config['survey_form']['praktikum']['one_lecturer']['englisch'] = 'SFO_Se4';
+$config['survey_form']['praktikum']['one_lecturer']['italienisch'] = 'SFO_Se4';
+$config['survey_form']['praktikum']['multiple_lecturers']['none'] = 'SFO_Sm4';
+$config['survey_form']['praktikum']['multiple_lecturers']['deutsch'] = 'SFO_Sm4';
+$config['survey_form']['praktikum']['multiple_lecturers']['englisch'] = 'SFO_Sm4';
+$config['survey_form']['praktikum']['multiple_lecturers']['italienisch'] = 'SFO_Sm4';
+$config['survey_form']['seminar']['one_lecturer']['none'] = 'SFO_Se4';
+$config['survey_form']['seminar']['one_lecturer']['deutsch'] = 'SFO_Se4';
+$config['survey_form']['seminar']['one_lecturer']['englisch'] = 'SFO_Se4';
+$config['survey_form']['seminar']['one_lecturer']['italienisch'] = 'SFO_Se4';
+$config['survey_form']['seminar']['multiple_lecturers']['none'] = 'SFO_Sm4';
+$config['survey_form']['seminar']['multiple_lecturers']['deutsch'] = 'SFO_Sm4';
+$config['survey_form']['seminar']['multiple_lecturers']['englisch'] = 'SFO_Sm4';
+$config['survey_form']['seminar']['multiple_lecturers']['italienisch'] = 'SFO_Sm4';
+$config['survey_form']['uebung']['one_lecturer']['none'] = 'SFO_Ue4';
+$config['survey_form']['uebung']['one_lecturer']['deutsch'] = 'SFO_Ue4';
+$config['survey_form']['uebung']['one_lecturer']['englisch'] = 'SFO_Ue4';
+$config['survey_form']['uebung']['one_lecturer']['italienisch'] = 'SFO_Ue4';
+$config['survey_form']['uebung']['multiple_lecturers']['none'] = 'SFO_Um4';
+$config['survey_form']['uebung']['multiple_lecturers']['deutsch'] = 'SFO_Um4';
+$config['survey_form']['uebung']['multiple_lecturers']['englisch'] = 'SFO_Um4';
+$config['survey_form']['uebung']['multiple_lecturers']['italienisch'] = 'SFO_Um4';
+$config['survey_form']['vorlesung']['one_lecturer']['none'] = 'SFO_Ve4';
+$config['survey_form']['vorlesung']['one_lecturer']['deutsch'] = 'SFO_Ve4';
+$config['survey_form']['vorlesung']['one_lecturer']['englisch'] = 'SFO_Ve4';
+$config['survey_form']['vorlesung']['one_lecturer']['italienisch'] = 'SFO_Ve4';
+$config['survey_form']['vorlesung']['multiple_lecturers']['none'] = 'SFO_Vm4';
+$config['survey_form']['vorlesung']['multiple_lecturers']['deutsch'] = 'SFO_Vm4';
+$config['survey_form']['vorlesung']['multiple_lecturers']['englisch'] = 'SFO_Vm4';
+$config['survey_form']['vorlesung']['multiple_lecturers']['italienisch'] = 'SFO_Vm4';
+
 $config['survey_verify'] = '1';
 $config['dispatch_report']='1';
 $config['survey_period'] = 'HS 2015'; //Semester, Datum anpassen

@@ -431,6 +431,7 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->writeElement("orgroot", $this->config->item('orgroot')); // Organisation
 			$lXMLWriter->writeElement("short", str_replace(" ", "", $lCourse->getSemester()) . "_" . $lCourse->getId()); // Short: Semester + ID, example: "FS2016_40"
 			$lXMLWriter->writeElement("type", $lCourse->getType()); // Type
+			// TODO: Fix bug of empty turnout elements
 			$lXMLWriter->writeElement("turnout", $lCourse->getTurnout()); // Turnout
 			$lXMLWriter->startElement("survey"); // Survey
 			$lXMLWriter->startElement("EvaSysRef");
@@ -463,8 +464,10 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->startElement("Survey"); // Survey
 			log_message('debug', 'writeXMLImportFile_10.1');
 			$lXMLWriter->writeAttribute("key", "Survey" . $lCourse->getId()); // Attribute ID
-			// TODO: Finish getSurveyForm() in course_model
-			// $lXMLWriter->writeElement("survey_form", $lCourse->getSurveyForm()); // Survey form
+			$surveyForm = $lCourse->getSurveyForm();
+			if($surveyForm !== FALSE){
+				$lXMLWriter->writeElement("survey_form", $lCourse->getSurveyForm()); // Survey form
+			}
 			log_message('debug', 'writeXMLImportFile_10.2');
 			$lXMLWriter->writeElement("survey_period", $lCourse->getSemester()); // Survey period
 			log_message('debug', 'writeXMLImportFile_10.3');
