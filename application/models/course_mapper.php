@@ -11,6 +11,7 @@ class Course_mapper extends CI_Model{
 	// Lecturer/recipient collections to avoid duplicates when generating XML file
 	private $allLecturers;
 	private $allRecipients;
+	private $newRecipientIndex;
 	
 	public function __construct(){
 		parent::__construct();
@@ -18,6 +19,7 @@ class Course_mapper extends CI_Model{
 		$this->load->model('Course_model');
 		$this->load->helper(array('excel', 'extended_form'));
 		$this->setTableNames();
+		$this->newRecipientIndex = 1; // To avoid recipients with key 0
 	}
 	
 	// Sets table names out of config, cannot be done directly on declaration of variables since config is not loaded yet at this point of execution
@@ -486,6 +488,7 @@ class Course_mapper extends CI_Model{
 					$lXMLWriter->endElement(); // EvaSysRef
 					$lXMLWriter->endElement(); // task
 					$tasknumber += 1;
+					log_message('debug', 'writeXMLImportFile_13.1; tasknumber: ' . $tasknumber);
 				}
 				$lXMLWriter->endElement(); // tasks
 				
@@ -501,57 +504,65 @@ class Course_mapper extends CI_Model{
 				log_message('debug', 'writeXMLImportFile_15');
 				// Default: 3 tasks for every online survey (dispatch, remind, close)
 				$tasknumber = (intval($lCourse->getId())) * 3 - 2;
+				log_message('debug', 'writeXMLImportFile_15.1; tasknumber: ' . $tasknumber);
 				$lXMLWriter->startElement("Task"); // Task
 				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
 				
 				// dispatch_pswd
-				if($tasknumber % 3 == 1){
-					log_message('debug', 'writeXMLImportFile_16');
-					$lXMLWriter->writeElement("type", $this->config->item('tasktype_1')); // Type
-					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_1')); // Datetime
-					$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
-					$lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
-					$lXMLWriter->writeElement("text", $this->config->item('taskmailtext_1')); // Mail text
-					$lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
-					$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
+				log_message('debug', 'writeXMLImportFile_16');
+				$lXMLWriter->writeElement("type", $this->config->item('tasktype_1')); // Type
+				$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_1')); // Datetime
+				$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+				$lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+				$lXMLWriter->writeElement("text", $this->config->item('taskmailtext_1')); // Mail text
+				$lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+				$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
+				
+				// Recipients
+				$lXMLWriter->startElement("recipients"); // Recipients
+				foreach($lCourse->getParticipants() as $lRecipient){
+					log_message('debug', 'writeXMLImportFile_17');
+					$lRecipientId = $this->checkForUniqueRecipient($lRecipient);
 					
-					// Recipients
-					$lXMLWriter->startElement("recipients"); // Recipients
-					foreach($lCourse->getParticipants() as $lRecipient){
-						log_message('debug', 'writeXMLImportFile_17');
-						$lRecipientId = $this->checkForUniqueRecipient($lRecipient);
-						
-						$lXMLWriter->startElement("recipient"); // Recipient
-						$lXMLWriter->startElement("EvaSysRef");
-						$lXMLWriter->writeAttribute("type", "Recipient");
-						$lXMLWriter->writeAttribute("key", "Recipient" . $lRecipientId); // Attribute ID
-						$lXMLWriter->endElement(); // EvaSysRef
-						$lXMLWriter->endElement(); // Recipient
-					}
-					$lXMLWriter->endElement(); // Recipients
+					$lXMLWriter->startElement("recipient"); // Recipient
+					$lXMLWriter->startElement("EvaSysRef");
+					$lXMLWriter->writeAttribute("type", "Recipient");
+					$lXMLWriter->writeAttribute("key", "Recipient" . $lRecipientId); // Attribute ID
+					$lXMLWriter->endElement(); // EvaSysRef
+					$lXMLWriter->endElement(); // Recipient
 				}
+				$lXMLWriter->endElement(); // Recipients
+				log_message('debug', 'writeXMLImportFile_17.1; tasknumber: ' . $tasknumber);
+				$lXMLWriter->endElement(); // Task
+				
 				// remind_pswd
-				else if($tasknumber % 3 == 2){
-					log_message('debug', 'writeXMLImportFile_18');
-					$lXMLWriter->writeElement("type", $this->config->item('tasktype_2')); // Type
-					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_2')); // Datetime
-					$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
-					$lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
-					$lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
-					$lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
-					$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
-				}
+				$tasknumber += 1;
+				$lXMLWriter->startElement("Task"); // Task
+				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
+				log_message('debug', 'writeXMLImportFile_18');
+				$lXMLWriter->writeElement("type", $this->config->item('tasktype_2')); // Type
+				$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_2')); // Datetime
+				$lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+				$lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+				$lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
+				$lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+				$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
+				$lXMLWriter->endElement(); // Task
+				log_message('debug', 'writeXMLImportFile_18.1; tasknumber: ' . $tasknumber);
+
 				// close_survey
-				else if($tasknumber % 3 == 0){
-					log_message('debug', 'writeXMLImportFile_19');
-					$lXMLWriter->writeElement("type", $this->config->item('tasktype_3')); // Type
-					$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_3')); // Datetime
-					// $lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
-					// $lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
-					// $lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
-					// $lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
-					$lXMLWriter->writeElement("dispatch_report", $this->config->item('dispatch_report')); // Dispatch report
-				}
+				$tasknumber += 1;
+				$lXMLWriter->startElement("Task"); // Task
+				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
+				$lXMLWriter->writeElement("type", $this->config->item('tasktype_3')); // Type
+				$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_3')); // Datetime
+				// $lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+				// $lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+				// $lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
+				// $lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+				$lXMLWriter->writeElement("dispatch_report", $this->config->item('dispatch_report')); // Dispatch report
+				log_message('debug', 'writeXMLImportFile_19.1; tasknumber: ' . $tasknumber);
+
 				
 				$lXMLWriter->endElement(); // Task
 				
@@ -632,7 +643,9 @@ class Course_mapper extends CI_Model{
 		
 		// If recipient mail address is not in collection yet, add it
 		if($recipientId === FALSE){
-			array_push($this->allRecipients, $pRecipientEmail);
+			// First recipient is placed at index 1, position 0 is unused
+			$this->allRecipients[$this->newRecipientIndex] = $pRecipientEmail;
+			$this->newRecipientIndex += 1;
 			$recipientId = array_search($pRecipientEmail, $this->allRecipients);
 		}
 		

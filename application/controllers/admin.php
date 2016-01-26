@@ -67,25 +67,30 @@ class Admin extends CI_Controller {
 					$this->load->view('footer');
 					
 				}
+				else{
 				
-				// Javascript files
-				$jQuery = array('type' => 'text/javascript',
-								'src' => 'https://code.jquery.com/jquery.min.js');
-				$orderformLibrary = array('type' => 'text/javascript',
-										  'src' => base_url('/assets/js/orderform_library.js'));
-				$tablesorter = array('type' => 'text/javascript',
-									 'src' => base_url('/assets/js/jquery.tablesorter.js'));
-				$bestellungen = array('type' => 'text/javascript',
-									  'src' => base_url('/assets/js/bestellungen.js'));
-				$this->load->view('header', array('title' => 'Administration',
-											  'page' => 'bestellungen',
-											  'width' => 'normal',
-                                              'logged_in' => $this->shib_auth->verify_shibboleth_session(),
-											  'access' => ($this->shib_auth->verify_user() !== false),
-											  'admin' => $this->adminaccess,
-											  'scripts' => array($jQuery, $orderformLibrary, $tablesorter, $bestellungen)));
-				$this->load->view('bestellungen');
-				$this->load->view('footer');
+					// Javascript files
+					$jQuery = array('type' => 'text/javascript',
+									'src' => 'https://code.jquery.com/jquery.min.js');
+					$orderformLibrary = array('type' => 'text/javascript',
+											  'src' => base_url('/assets/js/orderform_library.js'));
+					$tablesorter = array('type' => 'text/javascript',
+										 'src' => base_url('/assets/js/jquery.tablesorter.js'));
+					$bestellungen = array('type' => 'text/javascript',
+										  'src' => base_url('/assets/js/bestellungen.js'));
+					
+					// Load order table
+					$this->load->view('header', array('title' => 'Administration',
+												  'page' => 'bestellungen',
+												  'width' => 'normal',
+												  'logged_in' => $this->shib_auth->verify_shibboleth_session(),
+												  'access' => ($this->shib_auth->verify_user() !== false),
+												  'admin' => $this->adminaccess,
+												  'scripts' => array($jQuery, $orderformLibrary, $tablesorter, $bestellungen)));
+					$this->load->view('bestellungen');
+					$this->load->view('footer');
+					
+				}
 			}catch(Exception $e){
 				
 			}
