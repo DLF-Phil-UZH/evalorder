@@ -55,7 +55,15 @@ $num_rows = mysql_num_rows($var);
 						echo '<tr>';
 					// }
 					$surveyType = str_replace("umfrage", "", $result["surveyType"]); // Remove "umfrage" to save space
-					echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td><td>$result[lastExport]</td><td>$result[orderTime]</td><td>" . $surveyType . "</td>";
+					
+					// Only allow XML generation for course with online survey if at least one participant list is available, otherwise disable export checkbox
+					if($result["surveyType"] === "papierumfrage" || $result['participantFile1'] || $result['participantFile2']){
+						echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]'></td>";
+					}
+					else{
+						echo "<td class=\"export\"><input type='checkbox' name='courses[]' value='$result[id]' title=\"Keine Teilnehmerdaten vorhanden\" disabled></td>";
+					}
+					echo "<td>$result[lastExport]</td><td>$result[orderTime]</td><td>" . $surveyType . "</td>";
 					
 					$query2  = "SELECT " . $tableLecturers . ".surname, " . $tableLecturers . ".firstname, " . $tableCourses . ".name, " . $tableCourses . ".id AS id FROM " . $tableLecturers . " INNER JOIN";
 					$query2 .= " " . $tableCoursesLecturers . " ON " . $tableLecturers . ".id = " . $tableCoursesLecturers . ".lecturer_id INNER JOIN";
