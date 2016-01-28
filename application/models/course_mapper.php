@@ -644,6 +644,9 @@ class Course_mapper extends CI_Model{
 			// Close file
 			fclose($lXMLOutput);
 			// TODO: Update lastExport timestamp of concerned courses
+			foreach($pCourseIds as $courseId){
+				$this->updateLastExport($courseId);
+			}
 			// Return filename for download
 			return $lFilename;
 		}
@@ -668,6 +671,14 @@ class Course_mapper extends CI_Model{
 			log_message('debug', 'Updated turnout for course ' . $pCourse->getId() . '. Old turnout: ' . $oldTurnout . ', new turnout: ' . $turnout);
 		}
 		return $pCourse;
+	}
+	
+	// Updates database with current timestamp as last export date/time
+	public function updateLastExport($pCourseId){
+		// Update database with current timestamp
+		$this->db->where('id', $pCourseId);
+		$this->db->update($this->tableCourses, array('lastExport' => date("Y-m-d H:i:s")));
+		log_message('debug', 'updateLastExport(): course with ID ' . $pCourseId . ' exported at: ' . date("Y-m-d H:i:s"));
 	}
 	
 	// Checks if there is already an identical lecturer with the same values as the passed one.
