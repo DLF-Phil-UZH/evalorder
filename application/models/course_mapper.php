@@ -251,18 +251,18 @@ class Course_mapper extends CI_Model{
 						}
 					}
 					
-					if(count($participants1) + count($participants2) > 0){
+					// if(count($participants1) + count($participants2) > 0){
 						
 						// $tempCourse->setParticipants(array_merge($participants1, $participants2));
 						
-						foreach($participants1 as $participant){
-							$tempCourse->addParticipant($participant);
-						}
-						foreach($participants2 as $participant){
-							$tempCourse->addParticipant($participant);
-						}
-						
+					foreach($participants1 as $participant){
+						$tempCourse->addParticipant($participant);
 					}
+					foreach($participants2 as $participant){
+						$tempCourse->addParticipant($participant);
+					}
+						
+					// }
 					
 					// // Retrieve linked participants
 					// $participantQuery = $this->db->get_where($this->tableParticipants, array('courseId' => $course->id));
@@ -272,10 +272,10 @@ class Course_mapper extends CI_Model{
 						// }
 					// }
 					
-					else{
-						log_message('error', 'course_mapper->getAllCourses(): Corrupted participant data (course ID ' . $course->id . ').');
-						show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
-					}
+					// else{
+						// log_message('error', 'course_mapper->getAllCourses(): Corrupted participant data (course ID ' . $course->id . ').');
+						// show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
+					// }
 				}
 				
 				array_push($allCourses, $tempCourse);
