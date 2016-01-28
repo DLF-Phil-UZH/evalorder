@@ -66,5 +66,13 @@ Digitale Lehre und Forschung PhF / Hochschuldidaktik Universität Zürich';  //D
 $config['taskmailtext_2'] = 'Liebe Studierende\nDies ist ein Reminder für die Umfrage zur Lehrveranstaltung &quot;[COURSENAME]&quot;.\n\nFreundliche Grüsse\n\nDigitale Lehre und Forschung PhF / Hochschuldidaktik Universität Zürich';
 $config['taskmailsubject'] = 'Lehrveranstaltungsbeurteilung [COURSENAME]';
 
+/*
+If TRUE: Add every lecturer as participant as well when generating XML import file.
+If FALSE: Lecturers will not be imported as participants and not receive participant e-mails.
+Workaround for informing lecturers about the state of their survey/evaluation,
+slightly distorts return rate.
+*/
+$config['lecturers_as_participants'] = TRUE;
+
 /* End of file standardwerte_config.php */
 /* Location: ./application/config/standardwerte_config.php */

@@ -406,7 +406,7 @@ class Course_mapper extends CI_Model{
 		}
 	}
 	
-	// TODO: Function to generate XML file for passed course IDs
+	// Writes XML import file for passed course IDs and returns file name of it
 	public function writeXMLImportFile($pCourseIds){
 		$courses = array();
 		
@@ -451,18 +451,44 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->writeAttribute("key", "Course" . $lCourse->getId()); // Course: attribute
 			$lXMLWriter->startElement("dozs"); // Lecturers
 			
+			// Collect lecturer IDs first to avoid duplicates
+			$lecturerIdsCurrentCourse = array();
 			foreach($lCourse->getLecturers() as $lLecturer){
 				log_message('debug', 'writeXMLImportFile_4');
 				$lLecturerId = $this->checkForUniqueLecturer($lLecturer);
-				
+				array_push($lecturerIdsCurrentCourse, $lLecturerId);
+			}
+			
+			// Remove possible duplicates and write lecturer references
+			$lecturerIdsCurrentCourse = array_unique($lecturerIdsCurrentCourse);
+			foreach($lecturerIdsCurrentCourse as $lLecturerId){
 				$lXMLWriter->startElement("doz"); // Lecturer
 				$lXMLWriter->startElement("EvaSysRef");
 				$lXMLWriter->writeAttribute("type", "Person");
 				$lXMLWriter->writeAttribute("key", "User" . $lLecturerId); // Attribute ID
 				$lXMLWriter->endElement(); // EvaSysRef
 				$lXMLWriter->endElement(); // Lecturer
-				
 			}
+			
+			/*
+			If set in config, add every lecturer as participant as well to ensure he/she
+			receives the same e-mails as students when survey starts and when students are
+			reminded to participate.
+			Workaround for informing lecturers about the state of their survey/evaluation,
+			slightly distorts return rate.
+			Only applicable for online surveys.
+			*/
+			if($this->config->item('lecturers_as_participants') && $lCourse->getSurveyType() === "onlineumfrage"){
+				foreach($lecturerIdsCurrentCourse as $lLecturerId){
+					$lecturer = $this->getLecturerById($lLecturerId);
+					if($lecturer !== FALSE){
+						$lCourse->addParticipant($lecturer["email"]);
+						// Only increment turnout in course object, but not in database
+						$lCourse->setTurnout($lCourse->getTurnout() + 1);
+					}
+				}
+			}
+			
 			log_message('debug', 'writeXMLImportFile_5');
 			$lXMLWriter->endElement(); // Lecturers
 			
@@ -470,7 +496,6 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->writeElement("orgroot", $this->config->item('orgroot')); // Organisation
 			$lXMLWriter->writeElement("short", str_replace(" ", "", $lCourse->getSemester()) . "_" . $lCourse->getId()); // Short: Semester + ID, example: "FS2016_40"
 			$lXMLWriter->writeElement("type", $lCourse->getType()); // Type
-			// TODO: Fix bug of empty turnout elements
 			$lXMLWriter->writeElement("turnout", $lCourse->getTurnout()); // Turnout
 			$lXMLWriter->startElement("survey"); // Survey
 			$lXMLWriter->startElement("EvaSysRef");
@@ -643,7 +668,7 @@ class Course_mapper extends CI_Model{
 			fwrite($lXMLOutput, $lFileContent);
 			// Close file
 			fclose($lXMLOutput);
-			// TODO: Update lastExport timestamp of concerned courses
+			// Update lastExport timestamp of concerned courses
 			foreach($pCourseIds as $courseId){
 				$this->updateLastExport($courseId);
 			}
@@ -703,6 +728,19 @@ class Course_mapper extends CI_Model{
 		// Lecturer does not exist, add to lecturer collection and return his ID
 		array_push($this->allLecturers, $pLecturer);
 		return $pLecturer["id"];
+	}
+	
+	// Caution: Only looks up member variable $this->allLecturers, not database!
+	// Returns lecturer with passed ID if found, false otherwise
+	private function getLecturerById($pLecturerId){
+		log_message('debug', 'getLecturerById: type(pLecturerId) = ' . gettype($pLecturerId) . ', value = ' . $pLecturerId);
+		foreach($this->allLecturers as $lecturer){
+			log_message('debug', 'getLecturerById: type(lecturer["id"]) = ' . gettype($lecturer["id"]) . ', value = ' . $lecturer["id"]);
+			if($lecturer["id"] == $pLecturerId){
+				return $lecturer;
+			}
+		}
+		return FALSE;
 	}
 	
 	// Checks if there is already an identical recipient with the same e-mail address as the passed one.

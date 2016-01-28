@@ -212,7 +212,8 @@ class Evalorderform extends CI_Controller {
 			// Create course object
 			$course = $this->_prepareCourse($anzahlDozenten);
 			$turnout = 0;
-			$participants = array(); // To count unique participants
+			$participants1 = array(); // To count unique participants
+			$participants2 = array(); // To count unique participants
 			
 			if($this->input->post('filecheck1') != FALSE){ // If set AND string is not empty
 				
@@ -376,7 +377,6 @@ class Evalorderform extends CI_Controller {
 	// Handles file uploads requested by AJAX
 	public function uploadfile($pCourseId = NULL, $pFileNumber = NULL){
 		
-		// TODO: Update turnout value
 		log_message('debug', 'uploadfile_1: type(courseid) = ' . gettype($pCourseId) . ', type(filenumber) = ' . gettype($pFileNumber));
 		$storeResult = array(
 			'status' => '',
