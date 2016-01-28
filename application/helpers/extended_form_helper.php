@@ -74,3 +74,13 @@ if(!function_exists('isDigit')){
 	}
 
 }
+
+if(!function_exists('validateDateTime')){
+
+	// Returns true if passed DateTime string is a valid date in passed format, false otherwise
+	function validateDateTime($pDateTimeString, $pFormat = 'Y-m-d H:i'){
+		$d = DateTime::createFromFormat($pFormat, $pDateTimeString);
+		return $d && $d->format($pFormat) == $pDateTimeString;
+	}
+
+}
