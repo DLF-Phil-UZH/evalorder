@@ -234,7 +234,11 @@ class Course_model extends CI_Model{
 		if(!(is_array($this->participants))){
 			$this->participants = array();
 		}
-		array_push($this->participants, $pParticipant);
+		// Only add participant if not already existing
+		$participantKey = array_search($pParticipant, $this->participants);
+		if($participantKey === FALSE){
+			array_push($this->participants, $pParticipant);
+		}
 	}
 	
 	// Returns true, if course has not been registered in database so far
@@ -312,6 +316,15 @@ class Course_model extends CI_Model{
 				return "hardcopy";
 			default:
 				return "";
+		}
+	}
+	
+	public function getParticipantList($pNumber){
+		if($pNumber === 1){
+			return $this->participantFile1;
+		}
+		else if($pNumber === 2){
+			return $this->participantFile2;
 		}
 	}
 	

@@ -212,6 +212,7 @@ class Evalorderform extends CI_Controller {
 			// Create course object
 			$course = $this->_prepareCourse($anzahlDozenten);
 			$turnout = 0;
+			$participants = array(); // To count unique participants
 			
 			if($this->input->post('filecheck1') != FALSE){ // If set AND string is not empty
 				
@@ -234,10 +235,10 @@ class Evalorderform extends CI_Controller {
 					$participantFile1 = $this->input->post('filecheck1');
 					$course->setParticipantFile1($participantFile1);
 					
-					// Count participants
+					// Extract participants for calculating turnout
 					log_message('debug', 'evalorderform_10.6.2');
-					$turnout += countParticipantAddresses($fullPath1, $participantFileValidation1[1]);
-					log_message('debug', 'evalorderform_10.6.3---turnout = ' . $turnout);
+					$participants1 = extractParticipantAddresses($fullPath1, $participantFileValidation1[1]);
+					// log_message('debug', 'evalorderform_10.6.3---turnout = ' . $turnout);
 				}
 				
 			}
@@ -275,8 +276,8 @@ class Evalorderform extends CI_Controller {
 					$participantFile2 = $this->input->post('filecheck2');
 					$course->setParticipantFile2($participantFile2);
 					
-					// Count participants
-					$turnout += countParticipantAddresses($fullPath2, $participantFileValidation2[1]);
+					// Extract participants for calculating turnout
+					$participants2 = extractParticipantAddresses($fullPath2, $participantFileValidation2[1]);
 				}
 				
 			}
@@ -309,6 +310,7 @@ class Evalorderform extends CI_Controller {
 				//$course->setParticipants($participantAddresses);
 				
 				log_message('debug', 'evalorderform_12');
+				$turnout = count(array_unique(array_merge($participants1, $participants2)));
 				$course->setTurnout($turnout);
 				
 				log_message('debug', 'evalorderform_12.2');
@@ -425,13 +427,48 @@ class Evalorderform extends CI_Controller {
 					log_message('debug', 'uploadfile_12');
 					if($this->_validatesAsInteger($pCourseId) && $this->_validatesAsInteger($pFileNumber)){
 						log_message('debug', 'uploadfile_13');
+						
+						// Extract participants from new file
+						$participantsNew = extractParticipantAddresses($this->config->item('xls_folder') . $storeResult['filename'], $participantFileValidation[1]);
+						$turnout = count(array_unique($participantsNew));
+						log_message('debug', 'uploadfile_13.1');
+						// Retrieve all participants from other list, if existing
+						$otherList = 0;
+						if($pFileNumber === "1"){
+							$otherList = 2;
+						}
+						else if($pFileNumber === "2"){
+							$otherList = 1;
+						}
+						log_message('debug', 'uploadfile_13.2');
+						// If there is another list, extract participants, merge with new ones and calculate new turnout
+						$this->load->model('Course_mapper');
+						log_message('debug', 'uploadfile_13.2.1');
+						$course = $this->Course_mapper->getCourseById($pCourseId);
+						log_message('debug', 'uploadfile_13.2.2');
+						$otherListName = $course->getParticipantList($otherList);
+						log_message('debug', 'uploadfile_13.3');
+						if($otherListName != NULL){
+							$otherListValidation = checkParticipantFile($this->config->item('xls_folder') . $otherListName);
+							log_message('debug', 'uploadfile_13.4');
+							if($otherListValidation[0] === TRUE){
+							log_message('debug', 'uploadfile_13.5');
+								$participantsOld = extractParticipantAddresses($this->config->item('xls_folder') . $otherListName, $otherListValidation[1]);
+								$turnout = count(array_unique(array_merge($participantsNew, $participantsOld)));
+								log_message('debug', 'evalorderform/uplaodfile: New turnout for course ' . $pCourseId . ': ' . $turnout . ' (2 lists)');
+							}
+							else{
+								log_message('error', 'evalorderform/uplaodfile: Invalid participant list ' . $otherListName . ' of course ' . $pCourseId);
+							}
+						}
+						log_message('debug', 'uploadfile_13.6');
 						$this->load->database();
-						
+						log_message('debug', 'uploadfile_13.7');
 						$this->db->trans_start();
-						
+						log_message('debug', 'uploadfile_13.8');
 						$this->db->where('id', $pCourseId);
-						$this->db->update($this->config->item('table_courses'), array('participantFile' . $pFileNumber => $storeResult['filename']));
-						
+						$this->db->update($this->config->item('table_courses'), array('participantFile' . $pFileNumber => $storeResult['filename'], 'turnout' => $turnout));
+						log_message('debug', 'uploadfile_13.9');
 						$this->db->trans_complete();
 						log_message('debug', 'uploadfile_14');
 						if($this->db->trans_status() === FALSE){

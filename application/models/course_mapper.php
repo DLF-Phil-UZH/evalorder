@@ -252,7 +252,16 @@ class Course_mapper extends CI_Model{
 					}
 					
 					if(count($participants1) + count($participants2) > 0){
-						$tempCourse->setParticipants(array_merge($participants1, $participants2));
+						
+						// $tempCourse->setParticipants(array_merge($participants1, $participants2));
+						
+						foreach($participants1 as $participant){
+							$tempCourse->addParticipant($participant);
+						}
+						foreach($participants2 as $participant){
+							$tempCourse->addParticipant($participant);
+						}
+						
 					}
 					
 					// // Retrieve linked participants
@@ -279,13 +288,15 @@ class Course_mapper extends CI_Model{
 	
 	// Returns course with passed ID as course model
 	public function getCourseById($pCourseId){
-		
+		log_message('debug', 'getCourseById_1; pcourseid: '. $pCourseId);
 		$courseQuery = $this->db->get_where($this->tableCourses, array('id' => $pCourseId));
-		
+		log_message('debug', 'getCourseById_2');
 		if($courseQuery->num_rows() === 1){
+			log_message('debug', 'getCourseById_3');
 			foreach($courseQuery->result() as $course){
+				log_message('debug', 'getCourseById_4');
 				$tempCourse = new Course_model();
-				
+				log_message('debug', 'getCourseById_5');
 				$tempCourse->setId($course->id);
 				$tempCourse->setName($course->name);
 				$tempCourse->setType($course->type);
@@ -300,51 +311,75 @@ class Course_mapper extends CI_Model{
 				$tempCourse->setParticipantFile2($course->participantFile2);
 				$tempCourse->setLastExport($course->lastExport);
 				$tempCourse->setSemester($course->semester);
-				
+				log_message('debug', 'getCourseById_6');
 				// Retrieve linked lecturers
 				$lecturerQuery = $this->db->get_where($this->tableLecturers, array('courseId' => $course->id));
+				log_message('debug', 'getCourseById_7');
 				if($lecturerQuery->num_rows() > 0){
+					log_message('debug', 'getCourseById_8');
 					foreach($lecturerQuery->result_array() as $lecturer){
 						$tempCourse->addLecturer($lecturer);
+						log_message('debug', 'getCourseById_9');
 					}
 				}
 				else{
 					log_message('error', 'course_mapper->getCourseById(): Corrupted lecturer data (course ID ' . $course->id . ').');
 					show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
 				}
-				
+				log_message('debug', 'getCourseById_10');
 				// Paper survey
 				if(strcmp($course->surveyType, 'papierumfrage') === 0){
 					$tempCourse->setTurnout($course->turnout);
+					log_message('debug', 'getCourseById_11');
 				}
 				
 				// Online survey
 				elseif(strcmp($course->surveyType, 'onlineumfrage') === 0){
-					
+					log_message('debug', 'getCourseById_12');
 					$participants1 = array();
 					$participants2 = array();
-					
+					log_message('debug', 'getCourseById_13');
 					// Add participant addresses from file 1, if available
 					$participantFile1 = $tempCourse->getPathParticipantFile1();
 					if($participantFile1 !== FALSE){
+						log_message('debug', 'getCourseById_14');
 						$fileCheck = checkParticipantFile($participantFile1);
 						if($fileCheck[0] === TRUE){
+							log_message('debug', 'getCourseById_15');
 							$participants1 = extractParticipantAddresses($participantFile1, $fileCheck[1]);
 						}
 					}
 					
 					// Add participant addresses from file 2, if available
 					$participantFile2 = $tempCourse->getPathParticipantFile2();
+					log_message('debug', 'getCourseById_16');
 					if($participantFile2 !== FALSE){
+						log_message('debug', 'getCourseById_17');
 						$fileCheck = checkParticipantFile($participantFile2);
 						if($fileCheck[0] === TRUE){
+							log_message('debug', 'getCourseById_18');
 							$participants2 = extractParticipantAddresses($participantFile2, $fileCheck[1]);
 						}
 					}
 					
-					if(count($participants1) + count($participants2) > 0){
-						$tempCourse->setParticipants(array_merge($participants1, $participants2));
+					// if(count($participants1) + count($participants2) > 0){
+						// $tempCourse->setParticipants(array_merge($participants1, $participants2));
+					// }
+					log_message('debug', 'getCourseById_19');
+					// if(count($participants1) + count($participants2) > 0){
+					log_message('debug', 'getCourseById_20');
+						// $tempCourse->setParticipants(array_merge($participants1, $participants2));
+						
+					foreach($participants1 as $participant){
+						$tempCourse->addParticipant($participant);
+						log_message('debug', 'getCourseById_21');
 					}
+					foreach($participants2 as $participant){
+						$tempCourse->addParticipant($participant);
+						log_message('debug', 'getCourseById_22');
+					}
+						
+					// }
 					
 					// // Retrieve linked participants
 					// $participantQuery = $this->db->get_where($this->tableParticipants, array('courseId' => $course->id));
@@ -354,10 +389,10 @@ class Course_mapper extends CI_Model{
 						// }
 					// }
 					
-					else{
-						log_message('error', 'course_mapper->getCourseById(): Corrupted participant data (course ID ' . $course->id . ').');
-						show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
-					}
+					// else{
+						// log_message('error', 'course_mapper->getCourseById(): Corrupted participant data (course ID ' . $course->id . ').');
+						// show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [Datenbankfehler]. Bitte versuchen Sie es nochmals.');
+					// }
 				}
 				
 			}
@@ -385,6 +420,10 @@ class Course_mapper extends CI_Model{
 				log_message('error', 'writeXMLImportFile(): Invalid course ID: ' . $courseId);
 				show_error('Kritischer Fehler in der Verarbeitung Ihrer Eingaben [ung&uuml;ltige Kurs-ID]. Bitte versuchen Sie es nochmals.');
 			}
+		}
+		
+		foreach($courses as $course){
+			$course = $this->updateTurnout($course);
 		}
 		
 		$this->config->load('standardwerte_config');
@@ -613,6 +652,22 @@ class Course_mapper extends CI_Model{
 			return false;
 		}
 		
+	}
+	
+	// Updates turnout value in database and course object and returns updated course object
+	public function updateTurnout($pCourse){
+		// Only update turnout values if course has an online survey
+		if($pCourse->getSurveyType() === 'onlineumfrage'){
+			$oldTurnout = $pCourse->getTurnout(); // For debug purposes
+			$turnout = count($pCourse->getParticipants());
+			// Update database
+			$this->db->where('id', $pCourse->getId());
+			$this->db->update($this->tableCourses, array('turnout' => $turnout));
+			// Update model
+			$pCourse->setTurnout($turnout);
+			log_message('debug', 'Updated turnout for course ' . $pCourse->getId() . '. Old turnout: ' . $oldTurnout . ', new turnout: ' . $turnout);
+		}
+		return $pCourse;
 	}
 	
 	// Checks if there is already an identical lecturer with the same values as the passed one.
