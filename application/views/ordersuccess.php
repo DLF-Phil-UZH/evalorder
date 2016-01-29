@@ -26,6 +26,7 @@
 			<p>23. November 2015: E-Mail-Versand einer Erinnerung an Studierende, die noch nicht an der Evaluation teilgenommen haben</p>
 			<p>29. November 2015: E-Mail-Versand der anonymisierten Ergebnisse an die Dozierenden
 			Beachten Sie: Bei Online-Evaluationen k&ouml;nnen Ihre Studierenden die Sprache (deutsch/englisch) selber w&auml;hlen.</p>
+			<p>Jede(r) Dozierende erh&auml;lt ebenfalls per E-Mail einen Teilnahmelink und eine Teilnahmeerinnerung, damit er/sie informiert ist, sobald die Umfrage er&ouml;ffnet ist.</p>
 			<h3>Zeitlicher Ablauf der papierbasierten Evaluation</h3>
 			<p>ab 16. November 2015: interner Post-Versand des Fragebogens an die Dozierenden &ndash; Sie drucken die Frageb&ouml;gen selbst aus, lassen Sie in der Lehrveranstaltung ausf&uuml;llen und senden die ausgef&uuml;llten B&ouml;gen an die Hochschuldidaktik zur&uuml;ck.</p>
 			<p>ab 29. November 2015: interner Post-Versand der anonymisierten Ergebnisse durch die Hochschuldidaktik</p>

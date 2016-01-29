@@ -83,7 +83,7 @@ if (!empty($taskmailtext_1_value)){
 		<?php
 		echo "<b>Fixwerte:</b>";
 		echo "<br>";
-		echo "<table width='100%' border='1' style=\"padding: 5px;\">";
+		echo "<table width='100%' border='1'>";
 		echo "<tr><th width='15%'>Orgroot</th><td>$orgroot</td></tr>";
 		echo "<tr><th>Survey Verify</th><td>$survey_verify</td></tr>";
 		echo "<tr><th>Dispatch Report</th><td>$dispatch_report</td></tr>";
