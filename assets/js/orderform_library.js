@@ -287,6 +287,9 @@ function displayFormPreview(){
 			if($("input[name='sprache']:checked").val() === "englisch"){
 				language = "E";
 			}
+			// else if($("input[name='sprache']:checked").val() === "italienisch"){
+				// language = "I";
+			// }
 			// Show german form for italian as well unless italian form is available
 			else{
 				language = "D";
