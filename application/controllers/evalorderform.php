@@ -15,7 +15,7 @@ class Evalorderform extends CI_Controller {
 		
 		$user = $this->shib_auth->verify_user();
 		$admin = false;
-		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch"){
+		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch" | $_SERVER['HTTP_UNIQUEID']=="6D34303233383001@uzh.ch"){
 			$admin = true;
 		}
 		log_message('debug', 'evalorderform_A');
