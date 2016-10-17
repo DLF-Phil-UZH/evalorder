@@ -269,23 +269,26 @@ function displayFormPreview(){
 	var coursetype = "";
 	var lecturers = "";
 	var language = "";
+	var language2 = "";
 	var explanation = "";
 	
 	// Add full base URL of application with trailing slash
 	// Example:
-	// var baseURL = "https://www.uzh.ch/phil/static/dev/evalorder/";
+	// var baseURL = "https://www.uzh.ch/test/static/eva/";
 	var baseURL = "";
 	var imagefolderURL = baseURL + "assets/images/form_preview/"; 
 	
 	// Language
 	if($("#onlineumfrage").is(":checked")){
 		language = "D";
-		explanation = "Bei Online-Umfragen k&ouml;nnen Studierende die Sprache selber ausw&auml;hlen. In der Vorschau sehen Sie den deutschen Fragebogen.</br>";
+		language2 = "E";
+		explanation = "Bei Online-Umfragen k&ouml;nnen Studierende die Sprache selber ausw&auml;hlen. In der Vorschau sehen Sie sowohl den deutschen als auch den englischen Fragebogen.</br>";
 	}
 	else if($("#papierumfrage").is(":checked")){
 		if($("input:radio[name='sprache']").is(":checked")){
 			if($("input[name='sprache']:checked").val() === "englisch"){
 				language = "E";
+				language2 = "NA";
 			}
 			// else if($("input[name='sprache']:checked").val() === "italienisch"){
 				// language = "I";
@@ -293,12 +296,14 @@ function displayFormPreview(){
 			// Show german form for italian as well unless italian form is available
 			else{
 				language = "D";
+				language2 = "NA";
 			}
 		}
 		explanation = "";
 	}
 	else{
 		language = "";
+		language2 = "";
 		explanation = "";
 	}
 
@@ -326,12 +331,19 @@ function displayFormPreview(){
 	if(language.length > 0 && coursetype.length > 0 && lecturers.length > 0){
 		var imageURL1 = imagefolderURL + coursetype + "_" + lecturers + "D_" + language + "_p1.jpg";
 		var imageURL2 = imagefolderURL + coursetype + "_" + lecturers + "D_" + language + "_p2.jpg";
-		
+		if(language2.length > 0){
+			var imageURL3 = imagefolderURL + coursetype + "_" + lecturers + "D_" + language2 + "_p1.jpg";
+			var imageURL4 = imagefolderURL + coursetype + "_" + lecturers + "D_" + language2 + "_p2.jpg";
+		}
 		// Set up images
 		$("#formpreview1").attr('href', imageURL1);
 		$("#formpreview1 img").attr('src', imageURL1);
 		$("#formpreview2").attr('href', imageURL2);
 		$("#formpreview2 img").attr('src', imageURL2);
+		$("#formpreview3").attr('href', imageURL3);
+		$("#formpreview3 img").attr('src', imageURL3);
+		$("#formpreview4").attr('href', imageURL4);
+		$("#formpreview4 img").attr('src', imageURL4);
 		
 		// Initalize fancybox
 		$(".fancybox").fancybox({
@@ -354,12 +366,16 @@ function displayFormPreview(){
 		$("#formpreview_explanation").html(explanation + 'Klicken Sie auf eines der Bilder, um sie zu vergr&ouml;ssern.');
 		$("#formpreview1").show();
 		$("#formpreview2").show();
+		$("#formpreview3").show();
+		$("#formpreview4").show();
 	}
 	else{
 		// Hide preview elements
 		$("#formpreview_explanation").html('Vorschau nicht m&ouml;glich. Bitte w&auml;hlen Sie &uuml;berall eine Option aus.');
 		$("#formpreview1").hide();
 		$("#formpreview2").hide();
+		$("#formpreview3").hide();
+		$("#formpreview4").hide();
 	}
 	
 }
@@ -407,7 +423,7 @@ function uploadList(number, course) {
 			
 			// Add full base URL of application with trailing slash
 			// Example:
-			// var baseURL = "https://www.uzh.ch/phil/static/dev/evalorder/";
+			// var baseURL = "https://www.uzh.ch/test/static/eva/";
 			var baseURL = "";
 			var uploadAddress = baseURL + 'evalorderform/uploadfile';
 			// Open the connection.

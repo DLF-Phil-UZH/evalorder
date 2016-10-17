@@ -9,14 +9,14 @@
 RewriteEngine On
 # Add URL path to main folder of application after authority part of URI without trailing slash
 # Example:
-# RewriteBase /phil/static/dev/evalorder
-RewriteBase 
+# RewriteBase /test/static/eva
+RewriteBase
 
 # Always use https://
 RewriteCond %{SERVER_PORT} =80
 # Add full base URL of application with suffix "/$1"
 # Example:
-# RewriteRule ^(.*) https://www.uzh.ch/phil/static/dev/evalorder/$1 [L]
+# RewriteRule ^(.*) https://www.uzh.ch/test/static/eva/$1 [L]
 RewriteRule ^(.*)  [L]
 
 # Rewrite all requests that don't direct to a symbolig link, file or directory to index.php

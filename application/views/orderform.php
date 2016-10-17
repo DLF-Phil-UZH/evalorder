@@ -9,9 +9,11 @@
 			<p>Bestellen Sie hier freiwillige Evaluationen Ihrer Lehrveranstaltungen.</p>
 			
 			<h3>Bestellungen f&uuml;r das laufende Semester</h3>
-						
-			<p>Bestellungen k&ouml;nnen bis am 9. November 2015 &uuml;ber dieses Formular aufgegeben werden.</p>
-			<p>Sie geben pro Veranstaltung eine Bestellung auf. Im 3. Bestellschritt k&ouml;nnen Sie die Frageb&ouml;gen vorschauen.</p>
+			
+			<p>Bestellungen k&ouml;nnen bis am 7. November 2016 &uuml;ber dieses Formular aufgegeben werden.</p>
+			<p>Sie geben pro Veranstaltung eine Bestellung auf.</p>
+			<p class="explanation">Achtung: Im HS 2016 wird das ISEK - Institut für Sozialanthropologie und Empirische Kulturwissenschaft von diesem Evaluierungsangebot ausgenommen, da es bereits mit der Evaluierung durch die LVB abgedeckt wird. 
+			Ebenso wird das IPZ - Institut für Politikwissenschaft davon ausgenommen, da es bereits intern Evaluierungen des Lehrangebots vornimmt.</p>
 
 			<?php
 			// Display errors from text/option inputs
@@ -132,7 +134,7 @@
 					<h2>Lehrveranstaltung</h2>
 					<section>
 						<label for="lehrveranstaltung" class="labelasheading">Name</label>
-						<p class="explanation">Kopieren Sie m&ouml;glichst den genauen Namen Ihrer Lehrveranstaltung aus dem <a href="http://www.vorlesungen.uzh.ch/" target="_blank">Vorlesungsverzeichnis</a> oder <a href="https://www.olat.uzh.ch/" target="_blank">OLAT</a>.</p>
+						<p class="explanation">Geben Sie bitte den Titel Ihrer Lehrveranstaltung ein.</p>
 						<input id="lehrveranstaltung" name="lehrveranstaltung" type="text">
 					</section>
 					<h2>Dozierende</h2>
@@ -188,8 +190,8 @@
 								<tr>
 									<!-- <td>Art der Evaluation</td> -->
 									<td>
-										<input type="radio" value="onlineumfrage" id="onlineumfrage" name="umfrageart" onclick="showHideUmfrageart(); setNumberOfLists(1);" <?php echo set_radio('umfrageart', 'onlineumfrage'); ?> ><label for="onlineumfrage" class="notlast">Online: automatischer E-Mail-Versand von Teilnahmelinks an Studierende</label><?php // echo form_label('Online (Automatischer Versand eines Teilnahmelinks an Studierende per E-Mail)', 'onlineumfrage'); ?><br/>
-										<input type="radio" value="papierumfrage" id="papierumfrage" name="umfrageart" onclick="showHideUmfrageart(); setNumberOfLists(0);" <?php echo set_radio('umfrageart', 'papierumfrage'); ?> ><label for="papierumfrage">Papier: Post-Versand von Frageb&ouml;gen (PDF); Sie drucken aus und senden die ausgef&uuml;llten B&ouml;gen zur Auswertung zur&uuml;ck</label><?php // echo form_label('Papier (Austeilen von gedruckten Frageb&ouml;gen in einer Sitzung durch die Dozierenden)', 'papierumfrage'); ?>
+										<input type="radio" value="onlineumfrage" id="onlineumfrage" name="umfrageart" onclick="showHideUmfrageart(); setNumberOfLists(1);" <?php echo set_radio('umfrageart', 'onlineumfrage'); ?> ><label for="onlineumfrage" class="notlast">Online: direkter Fragebogenversand an die Studierenden per Mail <b>(empfohlen)</b></label><?php // echo form_label('Online (Automatischer Versand eines Teilnahmelinks an Studierende per E-Mail)', 'onlineumfrage'); ?><br/>
+										<input type="radio" value="papierumfrage" id="papierumfrage" name="umfrageart" onclick="showHideUmfrageart(); setNumberOfLists(0);" <?php echo set_radio('umfrageart', 'papierumfrage'); ?> ><label for="papierumfrage">Papier: Fragebogenversand an die Dozierenden per Mail (Sie drucken den Fragebogen aus und senden die ausgefüllten Bögen zur Auswertung per interner Post zurück)</label><?php // echo form_label('Papier (Austeilen von gedruckten Frageb&ouml;gen in einer Sitzung durch die Dozierenden)', 'papierumfrage'); ?>
 									</td>
 								</tr>
 								<!--
@@ -227,9 +229,11 @@
 						<p id="formpreview_explanation" class="explanation"></p>
 						<a id="formpreview1" class="fancybox" rel="formpreview" href=""><img src="" alt="" /></a>
 						<a id="formpreview2" class="fancybox" rel="formpreview" href=""><img src="" alt="" /></a>
+						<a id="formpreview3" class="fancybox" rel="formpreview" href=""><img src="" alt="" /></a>
+						<a id="formpreview4" class="fancybox" rel="formpreview" href=""><img src="" alt="" /></a>
 						
 					</section>
-					<h2>Teilnehmer</h2>
+					<h2>Teilnehmende</h2>
 					<section>
 
 						<div id="teilnehmerdatei_tr">
@@ -239,7 +243,8 @@
 								<?php //echo form_label('XLS-Teilnehmerdatei aus OLAT (<a href="">>> Anleitung zum Herunterladen Ihrer Teilnehmerliste</a>)', 'teilnehmerdatei'); ?><!--<input type="file" <?php // echo produceNameIDTags('teilnehmerdatei'); ?> size="50">-->
 								<!-- Number of lists to upload -->
 								<input type="radio" name="filenumber" id="nofiles" value="Keine Teilnehmerliste(n) hochladen" onclick="setNumberOfLists(0);">
-								<label for="nofiles" class="notlast"><span class="bold">Keine Teilnehmerlisten hochladen:</span> Laden Sie keine Teilnehmerliste hoch, aber tragen daf&uuml;r <span class="techterm">schornoc</span>, <span class="techterm">sodok_elk</span> und <span class="techterm">shodel_elk</span> als Besitzer in Ihren OLAT-Kurs ein (&gt;&gt; <span class="techterm">Detailansicht</span> &gt;&gt; <span class="techterm">Besitzer verwalten</span> &gt;&gt; <span class="techterm">Importieren</span> &gt;&gt; die drei Namen je auf eine Zeile &gt;&gt; <span class="techterm">Weiter</span> &gt;&gt; <span class="techterm">Fertigstellen</span>).</label>
+								<label for="nofiles" class="notlast"><span class="bold">Keine Teilnehmerliste hochladen:</span> Laden Sie keine Teilnehmerliste hoch, aber tragen daf&uuml;r <span class="techterm">schornoc</span> und <span class="techterm">sodok_elk</span> als Besitzer in Ihren OLAT-Kurs ein (&gt;&gt; <span class="techterm">Detailansicht</span> &gt;&gt; <span class="techterm">Besitzer verwalten</span> &gt;&gt; <span class="techterm">Importieren</span> &gt;&gt; die zwei Namen je auf eine Zeile &gt;&gt; <span class="techterm">Weiter</span> &gt;&gt; <span class="techterm">Fertigstellen</span>).</label>
+								<br/>
 								<br/>
 								<input type="radio" name="filenumber" id="file1" value="file1enable" onclick="setNumberOfLists(1);">
 								<label for="file1" class="notlast"><span class="bold">1 Liste hochladen:</span> Laden Sie die Teilnehmerliste aus der Campusgruppe A hoch, falls Ihre Auditoren <i>nicht</i> an der Evaluation teilnehmen sollen.</label>
@@ -251,7 +256,8 @@
 							
 							<div id="fileupload_explanation">
 								<!-- Idea icon source: http://findicons.com/icon/558374/idea?id=558374 -->
-								<p class="explanation"><img src="<?php echo base_url('/assets/images/idea.png'); ?>"><a href="https://www.youtube.com/watch?v=Yqh-Ospb4g4" target="_blank">Anleitungsvideo</a>, das Schritt f&uuml;r Schritt erkl&auml;rt, wie Sie eine Teilnehmerliste aus Ihrem OLAT-Kurs herunterladen k&ouml;nnen.</p>
+								<p class="explanation"><img src="<?php echo base_url('/assets/images/idea.png'); ?>"><a href="https://www.youtube.com/watch?v=opwFZqEA56k" target="_blank">Anleitungsvideo</a>, das Schritt f&uuml;r Schritt erkl&auml;rt, wie Sie eine Teilnehmerliste aus Ihrem OLAT-Kurs herunterladen k&ouml;nnen.</p>
+								<p>Benennen Sie bitte Ihre Teilnehmerlisten eindeutig, z.B. mit Vorlesungsverzeichnisnummer_HS16_CampusgruppeA</p>
 							</div>
 							
 							<!-- List 1 -->
@@ -283,11 +289,11 @@
 				</div>
 			</form>
 			
-			<p class="afterform">Probleme mit dem Bestellvorgang? Rufen Sie uns an unter (044 63)4 50 84.</p>
+			<p class="afterform">Probleme mit dem Bestellvorgang? Rufen Sie uns an unter (044 63)4 50 86.</p>
 			
 			<h3>FAQ</h3>
-			<p><span class="bold">Wie gross ist die Mindestanzahl Studierender, damit die Evaluation valide wird?</span><br/>Methodisch braucht es etwa zehn Studierende, damit die Resultate aussagekr&auml;ftig werden. Aber als Diskussionsanlass k&ouml;nnen Sie die Frageb&ouml;gen auch von weniger als zehn Studierender ausf&uuml;llen lassen.</p>
-			<p><span class="bold">F&uuml;r wen gilt dieses Angebot?</span><br/>Wir bieten Eva allen Dozierenden der PhF an.</p>
+			<p><span class="bold">Wie gross ist die Mindestanzahl Studierender, damit die Evaluation valide wird?</span><br/>Methodisch braucht es etwa zehn Studierende, damit die Resultate aussagekr&auml;ftig werden. Aber als Diskussionsanlass k&ouml;nnen Sie die Frageb&ouml;gen auch von weniger als zehn Studierenden ausf&uuml;llen lassen. Es sollten jedoch mindestens drei Studierende daran teilnehmen, um die Anonymität zu wahren.</p>
+			<p><span class="bold">F&uuml;r wen gilt dieses Angebot?</span><br/>Wir bieten Eva allen Dozierenden der PhF an, ausgenommen die oben erwähnten Institute / Seminare.</p>
 			<p><span class="bold">Wird die Auswertung nur mir oder auch dem Institut, f&uuml;r das ich lehre, zugesandt?</span><br/>Nur Ihnen.</p>
 			<p><span class="bold">Kann ich eigene Fragen erg&auml;nzen?</span><br/>Leider nicht; wir verwenden Standard-Frageb&ouml;gen. Aber die letzte Frage ist eine offene. Bitten Sie Ihre Studierenden, Ihnen dort zu Themen, die  Ihnen wichtig sind, ein Feedback zu geben.</p>
 			
@@ -322,9 +328,9 @@
 						cancel: "Abbrechen",
 						current: "Aktueller Schritt",
 						pagination: "Pagination",
-						finish: "Abschliessen",
 						next: "Weiter",
-						previous: "Zurück",
+						previous: "Zurück",						finish: "Abschliessen",
+
 						loading: "Lädt..."
 					}
 				});

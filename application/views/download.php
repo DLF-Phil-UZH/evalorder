@@ -11,7 +11,11 @@
 					echo '<p style="color: red;">' . $xmlError . '</p>';
 				}
 				if(isset($xmlFilename) && strlen($xmlFilename) > 0){
-					
+					// $this->load->helper('download');
+					// $data = file_get_contents($xmlFilename); // Read the file's contents
+					// $filename = basename($xmlFilename);
+
+					// force_download($filename, $data);
 					echo '<a href="' . site_url('admin/xmldownload') . '/' . $xmlFilename . '" class="buttonlike buttononly">XML-Importdatei herunterladen</a><br/>';
 					
 				}

@@ -493,6 +493,8 @@ class Course_mapper extends CI_Model{
 			$lXMLWriter->endElement(); // Lecturers
 			
 			$lXMLWriter->writeElement("name", $lCourse->getName()); // Name
+			//$coursename_clean= preg_replace('/[<>:=%,;\$\+\"\*\?\[\]\/\|\\\\]/', '', $lCourse->getName());
+			//$lXMLWriter->writeElement("name", $coursename_clean);
 			$lXMLWriter->writeElement("orgroot", $this->config->item('orgroot')); // Organisation
 			$lXMLWriter->writeElement("short", str_replace(" ", "", $lCourse->getSemester()) . "_" . $lCourse->getId()); // Short: Semester + ID, example: "FS2016_40"
 			$lXMLWriter->writeElement("type", $lCourse->getType()); // Type
@@ -543,10 +545,10 @@ class Course_mapper extends CI_Model{
 			if(strcmp($lCourse->getSurveyType(), 'onlineumfrage') === 0){
 				log_message('debug', 'writeXMLImportFile_12');
 				$lXMLWriter->startElement("survey_tasks"); // tasks
-				// Default: 3 tasks for every online survey (dispatch, remind, close)
-				$tasknumber = (intval($lCourse->getId())) * 3 - 2;
+				// Default: 4 tasks for every online survey (dispatch, remind, close, response_rate_mail)
+				$tasknumber = (intval($lCourse->getId())) * 4 - 3;
 				log_message('debug', 'writeXMLImportFile_12.1; tasknumber: ' . $tasknumber);
-				while($tasknumber <= (intval($lCourse->getId()) * 3)){
+				while($tasknumber <= (intval($lCourse->getId()) * 4)){
 					log_message('debug', 'writeXMLImportFile_13');	
 					$lXMLWriter->startElement("survey_task"); // task
 					$lXMLWriter->startElement("EvaSysRef");
@@ -569,8 +571,8 @@ class Course_mapper extends CI_Model{
 			// Write <Task> elements only if survey type is online (paper based surveys don't need <task> elements)
 			if(strcmp($lCourse->getSurveyType(), 'onlineumfrage') === 0){
 				log_message('debug', 'writeXMLImportFile_15');
-				// Default: 3 tasks for every online survey (dispatch, remind, close)
-				$tasknumber = (intval($lCourse->getId())) * 3 - 2;
+				// Default: 4 tasks for every online survey (dispatch, remind, close, response_rate_mail)
+				$tasknumber = (intval($lCourse->getId())) * 4 - 3;
 				log_message('debug', 'writeXMLImportFile_15.1; tasknumber: ' . $tasknumber);
 				$lXMLWriter->startElement("Task"); // Task
 				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
@@ -616,16 +618,33 @@ class Course_mapper extends CI_Model{
 				$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
 				$lXMLWriter->endElement(); // Task
 				log_message('debug', 'writeXMLImportFile_18.1; tasknumber: ' . $tasknumber);
+				
+				// response_rate_mail
+				$tasknumber += 1;
+				$lXMLWriter->startElement("Task"); // Task
+				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
+				log_message('debug', 'writeXMLImportFile_18.0.1');
+				$lXMLWriter->writeElement("type", $this->config->item('tasktype_3')); // Type
+				$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_3')); // Datetime
+				$lXMLWriter->writeElement("mail_instructor", $this->config->item('mail_instructor')); // mail_instructor
+				$lXMLWriter->writeElement("min_response", $this->config->item('min_response')); // min_response
+				// $lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
+				// $lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
+				// $lXMLWriter->writeElement("text", $this->config->item('taskmailtext_3')); // Mail text
+				// $lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
+				$lXMLWriter->writeElement("dispatch_report", "0"); // Dispatch report
+				$lXMLWriter->endElement(); // Task
+				log_message('debug', 'writeXMLImportFile_18.1.1; tasknumber: ' . $tasknumber);
 
 				// close_survey
 				$tasknumber += 1;
 				$lXMLWriter->startElement("Task"); // Task
 				$lXMLWriter->writeAttribute("key", "Task" . $tasknumber); // Attribute ID
-				$lXMLWriter->writeElement("type", $this->config->item('tasktype_3')); // Type
-				$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_3')); // Datetime
+				$lXMLWriter->writeElement("type", $this->config->item('tasktype_4')); // Type
+				$lXMLWriter->writeElement("datetime", $this->config->item('taskdatetime_4')); // Datetime
 				// $lXMLWriter->writeElement("sender_name", $this->config->item('sender_name')); // Sender name
 				// $lXMLWriter->writeElement("sender_email", $this->config->item('sender_mail')); // Sender e-mail
-				// $lXMLWriter->writeElement("text", $this->config->item('taskmailtext_2')); // Mail text
+				// $lXMLWriter->writeElement("text", $this->config->item('taskmailtext_4')); // Mail text
 				// $lXMLWriter->writeElement("subject", $this->config->item('taskmailsubject')); // Mail subject
 				$lXMLWriter->writeElement("dispatch_report", $this->config->item('dispatch_report')); // Dispatch report
 				log_message('debug', 'writeXMLImportFile_19.1; tasknumber: ' . $tasknumber);

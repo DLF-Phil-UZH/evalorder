@@ -1,7 +1,7 @@
 Eva
 ===
 
-Evaluation order form for lecturers/assistants with automated XML generation for import to EvaSys of Hochschuldidaktik of the University of Zurich
+Evaluation order form for lecturers/assistants with automated XML generation for import to EvaSys of Studienangebotsentwicklung of the University of Zurich
 
 # Installation
 This installation manual describes how Eva can be installed on a standard webhosting environment at the University of Zurich.

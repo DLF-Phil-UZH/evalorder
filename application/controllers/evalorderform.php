@@ -15,7 +15,7 @@ class Evalorderform extends CI_Controller {
 		
 		$user = $this->shib_auth->verify_user();
 		$admin = false;
-		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="252867@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch" | $_SERVER['HTTP_UNIQUEID']=="6D34303233383001@uzh.ch"){
+		if ($_SERVER['HTTP_UNIQUEID']=="709336@vho-switchaai.ch" | $_SERVER['HTTP_UNIQUEID']=="6D3130333234353501@uzh.ch" | $_SERVER['HTTP_UNIQUEID']=="6D34303233383001@uzh.ch" | $_SERVER['HTTP_UNIQUEID']=="733131373134393801@uzh.ch"){
 			$admin = true;
 		}
 		log_message('debug', 'evalorderform_A');
@@ -387,6 +387,7 @@ class Evalorderform extends CI_Controller {
 			log_message('debug', 'uploadfile_2.1');
 			$storeResult = $this->_storeParticipantList($_FILES["list1"]);
 			log_message('debug', 'uploadfile_3');
+			//log_message('debug', json_encode($_FILES["list1"]));
 			//echo "list1";
 		}
 		log_message('debug', 'uploadfile_4');
@@ -455,10 +456,10 @@ class Evalorderform extends CI_Controller {
 							log_message('debug', 'uploadfile_13.5');
 								$participantsOld = extractParticipantAddresses($this->config->item('xls_folder') . $otherListName, $otherListValidation[1]);
 								$turnout = count(array_unique(array_merge($participantsNew, $participantsOld)));
-								log_message('debug', 'evalorderform/uplaodfile: New turnout for course ' . $pCourseId . ': ' . $turnout . ' (2 lists)');
+								log_message('debug', 'evalorderform/uploadfile: New turnout for course ' . $pCourseId . ': ' . $turnout . ' (2 lists)');
 							}
 							else{
-								log_message('error', 'evalorderform/uplaodfile: Invalid participant list ' . $otherListName . ' of course ' . $pCourseId);
+								log_message('error', 'evalorderform/uploadfile: Invalid participant list ' . $otherListName . ' of course ' . $pCourseId);
 							}
 						}
 						log_message('debug', 'uploadfile_13.6');
@@ -548,11 +549,12 @@ class Evalorderform extends CI_Controller {
 		log_message('debug', '_storeParticipantList');
 		$uploadDirectory = $this->config->item('xls_folder');
 		log_message('debug', '_storeParticipantList');
-		if($file["error"] !== UPLOAD_ERR_OK){
+		if($file["error"] !== "0"){
 			log_message('debug', '_storeParticipantList');
 			return array(
 				'status' => 'error',
-				'feedback' => 'Fehler beim Hochladen der Datei.'
+				'feedback' => 'Fehler beim Hochladen der Datei.',
+				'case' => $file["error"]
 			);
 		}
 		
@@ -734,6 +736,7 @@ class Evalorderform extends CI_Controller {
 		$course = new Course_model();
 		$course->initialSet(
 			$this->input->post('lehrveranstaltung'),
+			//$lehrveranstaltung_clean = preg_replace('/[<>:=%,;\$\+\"\*\?\[\]\/\|\\\\]/', '', $this->input->post('lehrveranstaltung')),
 			$this->input->post('lvtyp'),
 			$lecturers,
 			$this->input->post('umfrageart'),
