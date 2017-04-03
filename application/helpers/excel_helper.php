@@ -49,7 +49,7 @@ if(!function_exists('checkParticipantFile')){
 		foreach($cellIterator as $cell){
 			// echo 'row ' . $cell->getRow() . ' col ' . $cell->getColumn() . ':---' . $cell->getValue() . '---<br/>';
 			log_message('debug', 'checkParticipantFile_6');
-			if(strcmp($cell->getValue(), 'E-Mail') == 0){
+			if(strcmp($cell->getValue(), 'E-Mail') == 0 | strcmp($cell->getValue(), 'E-mail') == 0){
 				log_message('debug', 'checkParticipantFile_7');
 				return array(TRUE, $cell->getColumn());
 				

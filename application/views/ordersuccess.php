@@ -12,11 +12,11 @@
 				<p><span class="warning bold">Achtung:</span> Tragen Sie uns von der DLF umgehend als Besitzer in Ihren OLAT-Kurs ein, damit wir Ihre Teilnehmerlisten herunterladen k&ouml;nnen:</p>
 				<ol>
 					<li>Starten Sie den Kurs.</li>
-					<li>Klicken Sie rechts auf <span class="techterm">Detailansicht</span>.</li>
-					<li>Klicken Sie rechts auf <span class="techterm">Besitzer verwalten</span>.</li>
-					<li>Klicken Sie nun auf <span class="techterm">Importieren</span>.</li>
-					<li>Geben Sie <span class="techterm">schornoc</span> und <span class="techterm">sodok_elk</span> auf je einer eigenen Zeile ins Textfeld ein und klicken Sie auf <span class="techterm">Weiter</span>.</li>
-					<li>Klicken Sie auf <span class="techterm">Fertigstellen</span>.</li>
+					<li>Klicken Sie im Werkzeuge-Menu auf <span class="techterm">Mitgliederverwaltung</span>.</li>
+					<li>Klicken Sie au den Knopf <span class="techterm">Mitglied hinzufügen</span>.</li>
+					<li>Es erscheint ein Formular, bei dem Sie <span class="techterm">sodok_elk</span> eingeben können.</li>
+					<li>Im nächsten Prozess-Schritt klicken Sie auf <span class="techterm">Weiter</span>. Dann wählen SIe die Checkbox (Kästchen) <span class="techterm">Besitzer</span> und klicken auf <span class="techterm">Fertigstellen</span>.
+					<li>Die E-Mail im letzten Prozess-Schritt brauchen Sie nicht zu versenden.</li>
 				</ol>
 			<?php }
 			?>
